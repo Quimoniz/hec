@@ -1,0 +1,13 @@
+# Config file for HEC - HTML Export Compiler
+# Please be aware, that upon each invocation the config file will be read
+# and thereafter be rewritten.
+# Values of config lines will only be preserved if the specific keys have been read out.
+# Unknown keys and commentary will be erased.
+include=./
+out_dir=./
+preview_file=parser-preview.html
+# While "firefox" is the default value, "lynx" is the recommended setting
+preview_browser=firefox
+showpad_url=http://pad.shownot.es/doc/
+# one of "anycast-full", "anycast", "chapter", "metastyle", "metacast", "wikigeeks", "json", "glossary", "tagsalphabetical", "print_r"
+parse_mode=anycast-full
