@@ -278,27 +278,27 @@ podcast_namedata["flaschen"]="WRINT";
 #  we will do nothing at all
 if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  $(echo "$padheader" | tail -n 1 | grep -qi "/head\\(er\\)\\?"); then
     #we begin by putting value of each header line we need into variables
-    podcast_name="$(echo "$padheader" | grep -i "^podcast:" | tail -n 1 | sed "s/^.\\{8\\} *//")";
-    episode="$(echo "$padheader" | grep -i "^episode:" | tail -n 1  | sed "s/^.\\{8\\} *//")";
+    podcast_name="$(echo "$padheader" | grep -i "^podcast:" | tail -n 1 | sed "s/^.\\{8\\} *//;s/[\\t ]*$//;")";
+    episode="$(echo "$padheader" | grep -i "^episode:" | tail -n 1  | sed "s/^.\\{8\\} *//;s/[\\t ]*$//;")";
     starttime="";
     if grep -qi "^actual-starttime" <<< "$padheader"; then
-        starttime="$(echo "$padheader" | grep -i "^actual-starttime:" | tail -n 1  | sed "s/^.\\{17\\} *//")";
+        starttime="$(echo "$padheader" | grep -i "^actual-starttime:" | tail -n 1  | sed "s/^.\\{17\\} *//;s/[\\t ]*$//;")";
     else
-        starttime="$(echo "$padheader" | grep -i "^starttime:" | tail -n 1  | sed "s/^.\\{10\\} *//")";
+        starttime="$(echo "$padheader" | grep -i "^starttime:" | tail -n 1  | sed "s/^.\\{10\\} *//;s/[\\t ]*$//;")";
     fi;
-    podcaster="$(echo "$padheader" | grep -i "^podcaster:" | tail -n 1  | sed "s/^.\\{10\\} *//")";
-    shownoter="$(echo "$padheader" | grep -i "^shownoter:" | tail -n 1  | sed "s/^.\\{10\\} *//")";
-    webseite="$(echo "$padheader" | grep -i "^webseite:" | tail -n 1  | sed "s/^.\\{9\\} *//")";
+    podcaster="$(echo "$padheader" | grep -i "^podcaster:" | tail -n 1  | sed "s/^.\\{10\\} *//;s/[\\t ]*$//;")";
+    shownoter="$(echo "$padheader" | grep -i "^shownoter:" | tail -n 1  | sed "s/^.\\{10\\} *//;s/[\\t ]*$//;")";
+    webseite="$(echo "$padheader" | grep -i "^webseite:" | tail -n 1  | sed "s/^.\\{9\\} *//;s/[\\t ]*$//;")";
     sendungsseite="";
     if grep -qi "^episodepage:\\?" <<< "$padheader"; then
-	sendungsseite="$(echo "$padheader" | grep -i "^episodepage:\\?" | tail -n 1  | sed "s/^.\\{11\\}:\\? *//")";
+	sendungsseite="$(echo "$padheader" | grep -i "^episodepage:\\?" | tail -n 1  | sed "s/^.\\{11\\}:\\? *//;s/[\\t ]*$//;")";
     else
         #deprecated
-	sendungsseite="$(echo "$padheader" | grep -i "^sendungsseite:\\?" | tail -n 1  | sed "s/^.\\{13\\}:\\? *//")";
+	sendungsseite="$(echo "$padheader" | grep -i "^sendungsseite:\\?" | tail -n 1  | sed "s/^.\\{13\\}:\\? *//;s/[\\t ]*$//;")";
     fi;
-    episodetitle="$(echo "$padheader" | grep -i "^episodetitle:" | tail -n 1  | sed "s/^.\\{13\\} *//")";
-    chatlog="$(echo "$padheader" | grep -i "^chatlogs\\?:\\?" | tail -n 1  | sed "s/^[Cc][Hh][Aa][Tt][Ll][Oo][Gg][Ss]\\?:\\? *//")";
-    sendungstitel="$(echo "$episode" | tail -n 1 | sed "s/-/ /g; s/0\\+\\([0-9]\\+\\)$/\\1/")";
+    episodetitle="$(echo "$padheader" | grep -i "^episodetitle:" | tail -n 1  | sed "s/^.\\{13\\} *//;s/[\\t ]*$//;")";
+    chatlog="$(echo "$padheader" | grep -i "^chatlogs\\?:\\?" | tail -n 1  | sed "s/^[Cc][Hh][Aa][Tt][Ll][Oo][Gg][Ss]\\?:\\? *//;s/[\\t ]*$//;")";
+    sendungstitel="$(echo "$episode" | tail -n 1 | sed "s/-/ /g; s/0\\+\\([0-9]\\+\\)$/\\1/;s/[\\t ]*$//;")";
     sendungstitel="$(echo "$sendungstitel" | grep -o "^." | tr "[:lower:]" "[:upper:]")$(echo "$sendungstitel" | tail --bytes=$(($(echo "$sendungstitel" | wc --chars) - 1)))";
     description_titel="Aus dem Pad";
 
