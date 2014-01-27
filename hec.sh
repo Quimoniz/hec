@@ -43,7 +43,8 @@ hec_path="./";
 out_path="./";
 preview_file="parser-preview.html";
 showpad_url="http://pad.shownot.es/doc/";
-parse_mode="anycast-full";
+parser_mode="anycast-full";
+parser_version="osfregex"
 preview_browser="firefox";
 if test -f "${config_file}"; then
     while read; do
@@ -57,20 +58,26 @@ if test -f "${config_file}"; then
             preview_browser="$(grep -i "^preview_browser=" <<< "$REPLY" | tail -n 1 | sed "s/^.\\{16\\}//;")";
         elif grep -qi "^showpad_url=" <<< "$REPLY"; then
             showpad_url="$(grep -i "^showpad_url=" <<< "$REPLY" | tail -n 1 | sed "s/^.\\{12\\}//;")";
-        elif grep -qi "^parse_mode=" <<< "$REPLY"; then
-            parse_mode="$(grep -i "^parse_mode=" <<< "$REPLY" | tail -n 1 | sed "s/^.\\{11\\}//;")";
+        elif grep -qi "^parser_version=" <<< "$REPLY"; then
+            parser_version="$(grep -i "^parser_version=" <<< "$REPLY" | tail -n 1 | sed "s/^.\\{15\\}//;")";
+        elif grep -qi "^parser_mode=" <<< "$REPLY"; then
+            parser_mode="$(grep -i "^parser_mode=" <<< "$REPLY" | tail -n 1 | sed "s/^.\\{12\\}//;")";
         fi;
     done < "${config_file}";
 fi;
-echo $'# Config file for HEC - HTML Export Compiler\n# Please be aware, that upon each invocation the config file will be read\n# and thereafter be rewritten.\n# Values of config lines will only be preserved if the specific keys have been read out.\n# Unknown keys and commentary will be erased.' > ".hec_config";
+echo $'# Config file for HEC - HTML Export Compiler\n# Please be aware, that upon each invocation the config file will be read\n# and thereafter be rewritten.\n# Values of config lines will only be preserved if the specific keys have been read out.\n# Unknown keys and commentary will be erased.\n# To reset a value to default it is crucial to delete the key' > ".hec_config";
 echo "include=${hec_path}" >> ".hec_config";
 echo "out_dir=${out_path}" >> ".hec_config";
 echo "preview_file=${preview_file}" >> ".hec_config";
 echo "# While \"firefox\" is the default value, \"lynx\" is the recommended setting" >> ".hec_config";
 echo "preview_browser=${preview_browser}" >> ".hec_config";
 echo "showpad_url=${showpad_url}" >> ".hec_config";
-echo '# one of "anycast-full", "anycast", "chapter", "metastyle", "metacast", "wikigeeks", "json", "glossary", "tagsalphabetical", "print_r"' >> ".hec_config";
-echo "parse_mode=${parse_mode}" >> ".hec_config";
+echo '# one of "osfregex", "wp-osf-shownotes"' >> ".hec_config";
+echo "parser_version=${parser_version}" >> ".hec_config";
+echo $'# which parser modes are available\n#   depends on the parser\'s version' >> ".hec_config";
+echo $'# - osfregex, one of\n#   - "anycast-full" (default)\n#   - "anycast"\n#   - "chapter"\n#   - "metastyle"\n#   - "metacast"\n#   - "wikigeeks"\n#   - "json"\n#   - "glossary"\n#   - "tagsalphabetical"\n#   - "print_r"' >> ".hec_config";
+echo $'# - wp-osf-shownotes, one of\n#   - "block"/"block style"/"button style"\n#   - "list"/"list_style"\n#   - "osf"/"clean osf"\n#   - "shownot.es" (default)\n#   - "glossary"\n#   - "shownoter"\n#   - "podcaster"\n#   - "JSON"\n#   - "Chapter"\n#   - "PSC"' >> ".hec_config";
+echo "parser_mode=${parser_mode}" >> ".hec_config";
 
 preview_file="${hec_path}/${preview_file}";
 
@@ -98,25 +105,48 @@ function getpad {
     fi;
 }
 function parse_text {
-    echo "$(echo "$1" | sed "s/\\([ )(\"']\\)#q\\( \\|\\\\n\\)/\\1#quote\\2/g; s/\\([^ ]\\)\\(\\(#[a-zA-ZäöüÄÖÜß]\\+ \\)*#[a-zA-ZäöüÄÖÜß]\\+\\\\n\\)/\\1 \\2/g; s/\\.\\( \\(#[a-zA-ZäöüÄÖÜß]\\+ \\)*#[a-zA-ZäöüÄÖÜß]\\+\\)\\?\\\\n/\\1\\\\n/g; s/ #q\\( \\|$\\)/ #quote\\1/; s/\\\\\\\\/\\\\/g;")";
+    echo "$(while read line; do printf '%s\\n' "$line"; done <<< "$(echo "$1" | sed "s/\\\\n/\\n/g;" | sed -rf "replacements.sed")")";
 }
 
 function use_parser {
-    tmp_file="$(mktemp)";
+    if test "osfregex" = "${parser_version}"; then
+        tmp_file="$(mktemp)";
 #one of "anycast-full", "anycast", "chapter", "metastyle", "metacast", "wikigeeks", "json", "glossary", "tagsalphabetical", "print_r"
-    local parser_mode="$1";
-    local padtext="$2";
-    echo -n "exportmode=$parser_mode&shownotes=" > "$tmp_file";
-    echo "$padtext" | sed "s/%/%25/g; s/#/%23/g; s/&/%26/g; s/\\\\n/%0A/g; s/\\\\\"/%22/g; s/ /%20/g" >> "$tmp_file";
-    echo -n $'&tags=chapter+section+spoiler+topic+embed+video+audio+image+shopping+glossary+source+app+title+quote&amazon=shownot.es-21&thomann=93439&fullmode=true' >> "$tmp_file";
+        local parser_mode="$1";
+        local padtext="$2";
+        echo -n "exportmode=$parser_mode&shownotes=" > "$tmp_file";
+        echo "$padtext" | sed "s/%/%25/g; s/#/%23/g; s/&/%26/g; s/\\\\n/%0A/g; s/\\\\\"/%22/g; s/ /%20/g" >> "$tmp_file";
+        echo -n $'&tags=chapter+section+spoiler+topic+embed+video+audio+image+shopping+glossary+source+app+title+quote&amazon=shownot.es-21&thomann=93439&fullmode=true' >> "$tmp_file";
 #tradedoubler doesn't work
 #&tradedoubler=16248286
-    echo "$(wget --post-file="$tmp_file" -O - "http://tools.shownot.es/parsersuite-old/export.php?mode=getpad" 2>/dev/null | sed "s/&#8221;/\\&#8220;/g")";
-    rm "$tmp_file" 2>/dev/null;
-}
+        echo "$(wget --post-file="$tmp_file" -O - "http://tools.shownot.es/parsersuite-old/export.php?mode=getpad" 2>/dev/null | sed "s/&#8221;/\\&#8220;/g")";
+        rm "$tmp_file" 2>/dev/null;
+    elif test "wp-osf-shownotes" = "${parser_version}"; then
+        local query_file="$(mktemp)";
+#one of "block"/"block style"/"button style", "list"/"list_style", "osf"/"clean osf", "shownot.es", "glossary", "shownoter", "podcaster", "JSON", "Chapter", "PSC"
+        local parser_mode="$1";
+        local padtext="$2";
+        local parsed_text="";
+        #assemble query
+        echo -n "pad=" > "${query_file}";
+        echo "${padtext}" | sed "s/\\\\n/\\n/g;s/\\\\t/\\t/g;s/\\\\\\(.\\)/\\1/g;" | base64 - | tr -d "\\n" >> "${query_file}";
+        echo -n "&tags=&amazon=shownot.es-21&thomann=93439&tradedoubler=16248286&mainmode=${parser_mode}&expmode=source" >> "${query_file}";
+        #actually do the query
+        parsed_text="$(wget -O - --post-file="${query_file}" "http://tools.shownot.es/parsersuite/api.php" 2>/dev/null)";
+        if test -f "${query_file}"; then
+            rm "${query_file}";
+        fi;
+        #remove header
+        if test "shownot.es" = "${parser_mode}"; then
+            parsed_text="$(echo "${parsed_text}" | sed "1,2d;")";
+        fi;
 
+        echo "${parsed_text}";
+    fi;
+}
 padtext="$(parse_text "$(getpad "$padname")")";
-padhtml="$(use_parser "${parse_mode}" "$padtext")";
+
+padhtml="$(use_parser "${parser_mode}" "$padtext")";
 #set mailto: and bitcoin: links
 padhtml="$(echo "$padhtml" | sed "s/<span class=\"\\([^\"]*\\)\"\\( data-tooltip=\"[^\"]*\"\\|\\)>\\(\\([^<&]\\|[^<&][^<l]\\|[^<&][^<l][^<t]\\|[^<&][^<l][^<t][^<;]\\)\\+\\) &lt;[Mm][Aa][Ii][Ll][Tt][Oo]:\\([^@<>]\\+@[^@<>]\\+\\)&gt;<\\/span>/<a href=\"mailto:\\5\" class=\"\\1\"\\2>\\3<\\/a>/g; s/<span class=\"\\([^\"]*\\)\"\\( data-tooltip=\"[^\"]*\"\\|\\)>\\(\\([^<&]\\|[^<&][^<l]\\|[^<&][^<l][^<t]\\|[^<&][^<l][^<t][^<;]\\)\\+\\) &lt;[Bb][Ii][Tt][Cc][Oo][Ii][Nn]:\\([a-zA-Z0-9]\\+\\)&gt;<\\/span>/<a href=\"bitcoin:\\5\" class=\"\\1\"\\2>\\3<\\/a>/g")";
 

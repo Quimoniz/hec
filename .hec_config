@@ -3,11 +3,37 @@
 # and thereafter be rewritten.
 # Values of config lines will only be preserved if the specific keys have been read out.
 # Unknown keys and commentary will be erased.
+# To reset a value to default it is crucial to delete the key
 include=./
 out_dir=./
 preview_file=parser-preview.html
 # While "firefox" is the default value, "lynx" is the recommended setting
 preview_browser=firefox
 showpad_url=http://pad.shownot.es/doc/
-# one of "anycast-full", "anycast", "chapter", "metastyle", "metacast", "wikigeeks", "json", "glossary", "tagsalphabetical", "print_r"
-parse_mode=anycast-full
+# one of "osfregex", "wp-osf-shownotes"
+parser_version=osfregex
+# which parser modes are available
+#   depends on the parser's version
+# - osfregex, one of
+#   - "anycast-full" (default)
+#   - "anycast"
+#   - "chapter"
+#   - "metastyle"
+#   - "metacast"
+#   - "wikigeeks"
+#   - "json"
+#   - "glossary"
+#   - "tagsalphabetical"
+#   - "print_r"
+# - wp-osf-shownotes, one of
+#   - "block"/"block style"/"button style"
+#   - "list"/"list_style"
+#   - "osf"/"clean osf"
+#   - "shownot.es" (default)
+#   - "glossary"
+#   - "shownoter"
+#   - "podcaster"
+#   - "JSON"
+#   - "Chapter"
+#   - "PSC"
+parser_mode=anycast-full
