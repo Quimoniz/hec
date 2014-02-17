@@ -105,7 +105,7 @@ function getpad {
     fi;
 }
 function parse_text {
-    echo "$(while read line; do printf '%s\\n' "$line"; done <<< "$(echo "$1" | sed "s/\\\\n/\\n/g;" | sed -rf "replacements.sed")")";
+    echo "$(while read line; do printf '%s\\n' "$line"; done <<< "$(echo "$1" | sed "s/\\\\n/\\n/g;" | sed -rf "${hec_path}/replacements.sed")")";
 }
 
 function use_parser {

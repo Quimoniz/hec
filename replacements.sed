@@ -1,5 +1,5 @@
 s/([ )("'])#q( |$)/\1#quote\2/g;
-s/([^ ])((#[a-zA-ZäöüÄÖÜß]+ )*#[a-zA-ZäöüÄÖÜß]+$)/\1 \\2/g;
+s/([^ ])((#[a-zA-ZäöüÄÖÜß]+ )*#[a-zA-ZäöüÄÖÜß]+$)/\1 \2/g;
 s/\.( (#[a-zA-ZäöüÄÖÜß]+ )*#[a-zA-ZäöüÄÖÜß]+)?$/\1/g;
 s/ #q( |$)/ #quote\1/;
 s/\\\\/\\/g;
@@ -12,8 +12,11 @@ h
 #do a replacement, match everything, forget everything that is not in brokets
 #  thereby keeping only the link in the pattern space
 s/^.*<(.*)>.*/\1/;
-#run the actual replacement command on the link
+#run the actual replacement commands on the link
+#replace "+" characters with hex escape sequence "%2B"
 s/\+/%2B/g;
+#prepend "http://" if a link begins with three double-ues
+s/^([Ww]{3})\./http:\/\/\1/;
 #Append the current pattern space to hold space (with a newline in between)
 #  so we get into the hold space:
 #     the original content of the line
