@@ -45,6 +45,7 @@ The script then requests the pad's contents, parses them, assumes a path name fo
 Reference
 ---------
 The script won't do anything if the OSF has no HEADER
+
 header fields:
 <table>
     <tr>
