@@ -16,10 +16,48 @@
 #     You should have received a copy of the GNU General Public License
 #     along with HEC. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>
 
-usernames="$@";
+
+
+
+#cached links
+loaded_cache="FALSE";
+cache_updated="FALSE";
+declare -A caur; 
+cache_path="";
+use_cache="FALSE";
+current_time="$(date +%s)";
+cache_noupdate_age="$(dc -e "5 60 *p")"
+cache_update_age="$(dc -e "86400 14 *p")"
+cache_discard_age="$(dc -e "86400 60 *p")"
+gloret="";
+
+function read_cache {
+    if test -f "${cache_path}"; then
+        local ele_nam;
+        local ele_val;
+        while read ele_nam ele_val; do
+            caur["${ele_nam}"]="${ele_val}";
+        done < "${cache_path}";
+    fi;
+
+    loaded_cache="TRUE";
+}
+
+function write_cache {
+    if test -f "${cache_path}"; then
+        local tmp_file="$(mktemp)";
+        #run through cache/array and write it to file
+        for csu in ${!caur[*]}; do
+            echo "$csu ${caur[$csu]}" >> "${tmp_file}";
+        done;
+        cp "$tmp_file" "${cache_path}";
+    fi;
+}
 
 #checks if the response from a given url is within the range of OK
-function check_url {
+function update_url {
+#DEBUG
+#xmessage "performing lookup on \"$1\"";
     local interesting_lines;
     local last_url="$1";
     local last_status=0;
@@ -27,26 +65,76 @@ function check_url {
     local str_location="Location: ";
     local str_awaiting="HTTP request sent, awaiting response... ";
     if grep -qi "de_" <<< "$LANG" || grep -qi "de_" <<< "$LANGUAGE"; then
-      str_location="Platz: ";
-      str_awaiting="HTTP-Anforderung gesendet, warte auf Antwort... ";
+       str_location="Platz: ";
+       str_awaiting="HTTP-Anforderung gesendet, warte auf Antwort... ";
     fi;
-    wget --verbose --dns-timeout=5 --connect-timeout=5 --read-timeout=2 --tries=3 -O /dev/null "$1" 2> "$tmp_log";
+    wget --verbose --dns-timeout=5 --connect-timeout=5 --read-timeout=2 --tries=3 -O /dev/null "${last_url}" 2> "$tmp_log";
     interesting_lines="$(grep "^\\(${str_location}\\|${str_awaiting}[0-9]\\+\\)" "$tmp_log")";
     saved_ifs="$IFS";
     IFS=$'\n';
     for current_line in $interesting_lines; do
-	if [ $(echo "$current_line" | grep -c "^${str_location}[^ ]\\+") -gt 0 ]; then
-	    last_url="$(echo "$current_line" | sed "s/^${str_location}\\([^ ]\\+\\) .*/\\1/")";
-	elif [ $(echo "$current_line" | grep -c "^${str_awaiting}[0-9]\\+") -gt 0 ]; then
-	    last_status="$(echo "$current_line" | sed "s/^${str_awaiting}\\([0-9]\\+\\).*/\\1/")";
-	fi;
+        if [ $(echo "$current_line" | grep -c "^${str_location}[^ ]\\+") -gt 0 ]; then
+            last_url="$(echo "$current_line" | sed "s/^${str_location}\\([^ ]\\+\\) .*/\\1/")";
+        elif [ $(echo "$current_line" | grep -c "^${str_awaiting}[0-9]\\+") -gt 0 ]; then
+            last_status="$(echo "$current_line" | sed "s/^${str_awaiting}\\([0-9]\\+\\).*/\\1/")";
+        fi;
     done;
     IFS="$saved_ifs";
     if [ $last_status -gt 199 ] && [ $last_status -lt 300 ]; then
-	echo "$last_url";
-    else
-	echo "";
+        echo "${last_url}";
     fi;
+}
+
+function greater_than {
+    dc -e "[FALSE][[TRUE]]Sa$2 $1>ap";
+}
+function lesser_than {
+    dc -e "[FALSE][[TRUE]]Sa$2 $1<ap";
+}
+
+#wraps update_url with a cache mechanism
+function check_url {
+    gloret="";
+    local src_url="$1";
+    local dst_url="";
+    if test "TRUE" = "${use_cache}"; then
+        local cache_time="0";
+        local cache_age="0"
+        local cache_url="";
+        if test "FALSE" = "${loaded_cache}"; then
+            read_cache;
+        fi;
+        #consult cache
+        if test -n "${caur[${src_url}]}"; then
+            read cache_time cache_url <<< "${caur[${src_url}]}";
+
+            cache_age="$(dc -e "${current_time} ${cache_time} - p")";
+            if test "TRUE" = "$(lesser_than "${cache_noupdate_age}" "${cache_age}")"; then
+                dst_url="${cache_url}";
+            else
+                if test "TRUE" = "$(greater_than "${cache_age}" "${cache_update_age}")"; then
+                    dst_url="$(update_url "${src_url}")";
+                    if test -n "${dst_url}"; then
+                        caur["{$src_url}"]="${current_time} ${dst_url}";
+                        cache_updated="TRUE";
+                    elif test "TRUE" = "$(greater_than "${cache_age}" "${cache_discard_age}")"; then
+                        unset caur["${src_url}"];
+                    fi;
+                else
+                    dst_url="${cache_url}";
+                fi;
+            fi;
+        else
+            dst_url="$(update_url "${src_url}")";
+            caur["${src_url}"]="${current_time} ${dst_url}";
+            cache_updated="TRUE";
+        fi;
+    else 
+        dst_url="$(update_url "${src_url}")";
+    fi;
+    if test -n "${dst_url}"; then
+        gloret="${dst_url}";
+    fi; 
 }
 
 function host_to_desc {
@@ -92,6 +180,26 @@ function host_to_desc {
     fi;
     echo "${host_desc}";
 }
+
+usernames="";
+
+if test -n "$2"; then
+    if grep -qi "^cache=" <<< "$1";
+        then
+        cache_path="$(sed -r "s/^.{6}//;" <<< "$1")";
+        if test -f "${cache_path}"; then
+            use_cache="TRUE";
+        fi;
+    fi;
+    usernames="$2";
+else
+    usernames="$1";
+fi;
+
+
+#DEBUG
+#xmessage "$(printf "\$cache_path:${cache_path}\\n\$usernames:${usernames}")";
+#exit 0;
 
 
 declare -a userlist;
@@ -191,19 +299,23 @@ for cur_user in "${userlist[@]}"; do
     #do twitter mumbo jumbo with linkaddr and nickname
     if $(echo "$nickname" | grep -q "^@"); then
 	if $(echo "$linkaddr" | grep -qi "twitter\\|app\\.net"); then
-	    linkaddr="$(check_url "$linkaddr")";
+            check_url "$linkaddr";
+	    linkaddr="$gloret";
 	    if test "" = "$linkaddr"; then
 		nickname="$(echo "$nickname" | sed s/^@//)";
 	    fi;
 	elif test "" != "$linkaddr"; then
 	    nickname="$(echo "$nickname" | sed s/^@//)";
-	    linkaddr="$(check_url "$linkaddr")";
+	    check_url "$linkaddr";
+	    linkaddr="$gloret";
 	else
 	    #check if an app.net or twitter.com user with given nickname exists
 	    tmp_name="$(echo "$nickname" | sed "s/^@//")";
-	    tmp_url="$(check_url "https://alpha.app.net/$tmp_name")";
+            check_url "https://alpha.app.net/$tmp_name";
+	    tmp_url="$gloret";
 	    if test "" = "$tmp_url"; then
-		tmp_url="$(check_url "https://twitter.com/$tmp_name")";
+                check_url "https://twitter.com/$tmp_name";
+		tmp_url="$gloret";
 		if test "" = "$tmp_url"; then
 		    linkaddr="";
 		    nickname="$tmp_name";
@@ -220,7 +332,8 @@ for cur_user in "${userlist[@]}"; do
         #  only when linkaddr contains twitter or app.net
         #  and the nickname is contained in the url
 	if test "" != "$linkaddr"; then
-	    linkaddr="$(check_url "$linkaddr")";
+            check_url "$linkaddr";
+	    linkaddr="$gloret";
 	    if $(echo "$linkaddr" | grep -qi "twitter\\|app\\.net"); then
 		if test "" != "$nickname"; then
 		    tmp_link="$(echo "$linkaddr" | tr "[:upper:]" "[:lower:]")";
@@ -278,3 +391,10 @@ for cur_user in "${userlist[@]}"; do
     fi;
     let j++;
 done;
+
+
+if test "TRUE" = "${use_cache}" && test "TRUE" = "${cache_updated}"; then
+    write_cache;
+fi;
+
+exit 0;

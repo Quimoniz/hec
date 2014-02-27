@@ -80,6 +80,10 @@ echo $'# - wp-osf-shownotes, one of\n#   - "block"/"block style"/"button style"\
 echo "parser_mode=${parser_mode}" >> ".hec_config";
 
 preview_file="${hec_path}/${preview_file}";
+url_cache_path="${hec_path}/url_cache.dat";
+if test ! -f "${url_cache_path}"; then
+    touch "${url_cache_path}";
+fi;
 
 if test "" = "$padname"; then
   echo "You omitted the mandatory pad name parameter. Aborting.";
@@ -861,10 +865,10 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	echo $'      </tr>\n' | tee -a "$shownotes_header_tmp";
     fi;
     echo $'      <tr>\n        <td title="In alphabetischer Reihenfolge">Podcaster</td>\n        <td>' | tee -a "$shownotes_header_tmp";
-    bash "${hec_path}/form-userlist.sh" "$podcaster" | sed "s/^\\(.*\\)/          \\1/" | tee -a "$shownotes_header_tmp";
+    bash "${hec_path}/form-userlist.sh" cache="${url_cache_path}" "$podcaster" | sed "s/^\\(.*\\)/          \\1/" | tee -a "$shownotes_header_tmp";
     echo '        </td>';
     echo $'      </tr>\n      <tr>\n        <td title="In alphabetischer Reihenfolge">Shownoter</td>\n        <td>' | tee -a "$shownotes_header_tmp";
-    bash "${hec_path}/form-userlist.sh" "$shownoter" | sed "s/^\\(.*\\)/          \\1/" | tee -a "$shownotes_header_tmp";
+    bash "${hec_path}/form-userlist.sh" cache="${url_cache_path}" "$shownoter" | sed "s/^\\(.*\\)/          \\1/" | tee -a "$shownotes_header_tmp";
     echo $'	</td>\n      </tr>' | tee -a "$shownotes_header_tmp";
     if test -n "$chatlog"; then
 	echo $'      <tr>' | tee -a "$shownotes_header_tmp";
