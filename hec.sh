@@ -193,7 +193,8 @@ podcast_slugdata["bluemoon"]="bm";
 podcast_slugdata["bluemoon/lateline"]="bmll";
 podcast_slugdata["absradio"]="abs";
 podcast_slugdata["chaosradio"]="cr";
-podcast_slugdata["einschlafen"]="ep";
+podcast_slugdata["einschlafen"]="ep"
+podcast_slugdata["fanb0ys"]="fan";
 podcast_slugdata["freak-show"]="mm";
 podcast_slugdata["jobscast"]="jc";
 podcast_slugdata["hoaxilla"]="hoaxilla";
@@ -226,6 +227,7 @@ podcast_logodata["ll"]="<img src=\"http://shownot.es/img/logos/ll_logo.png\" wid
 podcast_logodata["abs"]="<img src=\"http://shownot.es/img/logos/abs_logo.png\" width=\"150\" height=\"150\" alt=\"ABSradio Logo\">";
 podcast_logodata["cr"]="<img src=\"http://shownot.es/img/logos/cr_logo.png\" width=\"150\" height=\"150\" alt=\"Chaosradio Logo, Verwendung mit freundlicher Genehmigung von @chaosradio\">";
 podcast_logodata["ep"]="<img src=\"http://shownot.es/img/logos/ep_logo.png\" width=\"150\" height=\"150\" alt=\"Einschlafen Podcast Logo\">";
+podcast_logodata["fan"]="<img src=\"http://shownot.es/img/logos/fan_logo.png\" width=\"150\" height=\"150\" alt=\"Fanb0ys Logo\">";
 podcast_logodata["hoaxilla"]="<img src=\"http://shownot.es/img/logos/hoaxilla_logo.png\" width=\"150\" height=\"150\" alt=\"Hoaxilla Logo\">";
 podcast_logodata["jc"]="<img src=\"http://shownot.es/img/logos/jc_logo.png\" width=\"150\" height=\"150\" alt=\"Jobscast Logo\">";
 podcast_logodata["lecast"]="<img src=\"http://shownot.es/img/logos/lecast_logo.png\" width=\"150\" height=\"150\" alt=\"LeCast Logo\">";
@@ -256,6 +258,7 @@ podcast_urldata["ll"]="http://www.lateline.de/";
 podcast_urldata["abs"]="http://absradio.de/";
 podcast_urldata["cr"]="http://chaosradio.ccc.de/";
 podcast_urldata["ep"]="http://einschlafen-podcast.de/";
+podcast_urldata["ep"]="http://fanboys.fm/";
 podcast_urldata["jc"]="http://www.jobscast.de/";
 podcast_urldata["hoaxilla"]="http://www.hoaxilla.com/";
 podcast_urldata["lecast"]="http://bullosamedia.de/";
@@ -285,6 +288,7 @@ podcast_namedata["ll"]="LateLine";
 podcast_namedata["abs"]="ABSradio";
 podcast_namedata["cr"]="Chaosradio";
 podcast_namedata["ep"]="Einschlafen Podcast";
+podcast_namedata["fan"]="Fanb0ys";
 podcast_namedata["jc"]="Jobscast";
 podcast_namedata["hoaxilla"]="Hoaxilla";
 podcast_namedata["lecast"]="LeCast";
@@ -541,12 +545,18 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
         fi;
 	description_titel="Automatisch generiert";
 	archivable="yes";
-    elif test "$podcast_slug" = "hoaxilla"; then
+    elif test "$podcast_slug" = "hoaxilla" || test "$podcast_slug" = "fan"; then
 	archive_path+="$podcast_slug";
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
-	archive_filename="$archive_number.$(echo "$podcast_slug" | head --bytes=1 | tr "[:lower:]" "[:upper:]")$(echo "$podcast_slug" | sed "s/^.//")-$episode_number.html";
-	sendungstitel="${podcast_namedata[$podcast_slug]} #$episode_number";
+        if test "$podcast_slug" = "hoaxilla"; then
+            archive_filename="$archive_number.$(echo "$podcast_slug" | head --bytes=1 | tr "[:lower:]" "[:upper:]")$(echo "$podcast_slug" | sed "s/^.//")-$episode_number.html";
+            sendungstitel="${podcast_namedata[$podcast_slug]} #$episode_number";
+        elif test "$podcast_slug" = "fan"; then
+            archive_filename="$archive_number.$(echo "$podcast_slug" | tr "[:lower:]" "[:upper:]")${archive_number}.html";
+            sendungstitel="Episode #$episode_number";
+        fi;
+
 	description_titel="Automatisch generiert";
 	archivable="yes";
 
