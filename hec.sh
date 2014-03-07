@@ -46,6 +46,7 @@ showpad_url="http://pad.shownot.es/doc/";
 parser_mode="anycast-full";
 parser_version="osfregex"
 preview_browser="firefox";
+write_outpath="";
 if test -f "${config_file}"; then
     while read; do
         if grep -qi "^include=" <<< "$REPLY"; then
@@ -62,6 +63,8 @@ if test -f "${config_file}"; then
             parser_version="$(grep -i "^parser_version=" <<< "$REPLY" | tail -n 1 | sed "s/^.\\{15\\}//;")";
         elif grep -qi "^parser_mode=" <<< "$REPLY"; then
             parser_mode="$(grep -i "^parser_mode=" <<< "$REPLY" | tail -n 1 | sed "s/^.\\{12\\}//;")";
+        elif grep -qi "^write_outpath=" <<< "$REPLY"; then
+            write_outpath="$(grep -i "^write_outpath=" <<< "$REPLY" | tail -n 1 | sed "s/^.\\{14\\}//;")";
         fi;
     done < "${config_file}";
 fi;
@@ -78,6 +81,8 @@ echo $'# which parser modes are available\n#   depends on the parser\'s version'
 echo $'# - osfregex, one of\n#   - "anycast-full" (default)\n#   - "anycast"\n#   - "chapter"\n#   - "metastyle"\n#   - "metacast"\n#   - "wikigeeks"\n#   - "json"\n#   - "glossary"\n#   - "tagsalphabetical"\n#   - "print_r"' >> ".hec_config";
 echo $'# - wp-osf-shownotes, one of\n#   - "block"/"block style"/"button style"\n#   - "list"/"list_style"\n#   - "osf"/"clean osf"\n#   - "shownot.es" (default)\n#   - "glossary"\n#   - "shownoter"\n#   - "podcaster"\n#   - "JSON"\n#   - "Chapter"\n#   - "PSC"' >> ".hec_config";
 echo "parser_mode=${parser_mode}" >> ".hec_config";
+echo $'# specially write where I wrote' >> ".hec_config";
+echo "write_outpath=${write_outpath}" >> ".hec_config";
 
 preview_file="${hec_path}/${preview_file}";
 url_cache_path="${hec_path}/url_cache.dat";
@@ -705,6 +710,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	archivable="yes";
     fi;
 
+
 ####DEBUG:
 #    echo "$archive_path/$archive_filename";
 #    echo "\$archivable: $archivable";
@@ -939,13 +945,14 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     #     so we'll remove any double dashes
     #     Anyway, they occur here mainly because we append a slash to
     #     config variable "$hec_path"
-    if grep -qi "lynx" <<< "${preview_browser}"; then
-        # lynx doesn't fork upon invocation
-        ${preview_browser} "$(sed "s/\\/\\+/\\//g;" <<< "$preview_file")" 2>/dev/null
-    else
-        ${preview_browser} "$(sed "s/\\/\\+/\\//g;" <<< "$preview_file")" 2>/dev/null &
+    if test -n "${preview_browser}"; then
+        if grep -qi "lynx" <<< "${preview_browser}"; then
+            # lynx doesn't fork upon invocation
+            ${preview_browser} "$(sed "s/\\/\\+/\\//g;" <<< "$preview_file")" 2>/dev/null
+        else
+            ${preview_browser} "$(sed "s/\\/\\+/\\//g;" <<< "$preview_file")" 2>/dev/null &
+        fi;
     fi;
-
 #DEBUG
 #    echo "$podcast_slug";
 #    echo "$episode_number"
@@ -956,4 +963,9 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 #    echo "$sendungsseite";
 #    echo "$podcaster"
 #    echo "$shownoter";
+    echo "$archive_path/$archive_filename" > "${hec_path}/${write_outpath}";
+    exit 0;
+else
+    echo "" > "${hec_path}/${write_outpath}";
+    exit 1;
 fi;

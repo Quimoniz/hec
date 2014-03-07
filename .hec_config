@@ -37,3 +37,5 @@ parser_version=osfregex
 #   - "Chapter"
 #   - "PSC"
 parser_mode=anycast-full
+# specially write where I wrote
+write_outpath=
