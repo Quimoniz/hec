@@ -504,6 +504,8 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	fi;
         if test "osm" = "$podcast_slug"; then
             sendungstitel="OSMDE${archive_number} Radio OSM ${episode_number}";
+        elif test "culinaricast" = "$podcast_slug"; then
+            sendungstitel="CC $archive_number";
         else
 	    sendungstitel="${podcast_namedata[$podcast_slug]} $archive_number";
         fi;
