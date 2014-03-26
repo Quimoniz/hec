@@ -197,6 +197,7 @@ declare -A podcast_slugdata;
 podcast_slugdata["bluemoon"]="bm";
 podcast_slugdata["bluemoon/lateline"]="bmll";
 podcast_slugdata["absradio"]="abs";
+podcast_slugdata["culinaricast"]="culinaricast";
 podcast_slugdata["chaosradio"]="cr";
 podcast_slugdata["einschlafen"]="ep"
 podcast_slugdata["fanb0ys"]="fan";
@@ -230,6 +231,7 @@ podcast_logodata["bm"]="<img src=\"http://shownot.es/img/logos/bm_logo.png\" wid
 podcast_logodata["bmll"]="<img src=\"http://shownot.es/img/logos/bmll_logo.png\" width=\"150\" height=\"150\" alt=\"Blue Moon/LateLine Logo (Foto des Blue Moons von Ainhoa Pcb l, CC: BY)\" title=\"Blue Moon/LateLine Logo (Foto des Blue Moons von Ainhoa Pcb l, CC: BY)\">";
 podcast_logodata["ll"]="<img src=\"http://shownot.es/img/logos/ll_logo.png\" width=\"150\" height=\"150\" alt=\"LateLine Logo\">";
 podcast_logodata["abs"]="<img src=\"http://shownot.es/img/logos/abs_logo.png\" width=\"150\" height=\"150\" alt=\"ABSradio Logo\">";
+podcast_logodata["culinaricast"]="<img src=\"http://shownot.es/img/logos/culinaricast_logo.png\" width=\"150\" height=\"150\" alt=\"Culinaricast Logo, Verwendung mit freundlicher Genehmigung von @culinaricast\">";
 podcast_logodata["cr"]="<img src=\"http://shownot.es/img/logos/cr_logo.png\" width=\"150\" height=\"150\" alt=\"Chaosradio Logo, Verwendung mit freundlicher Genehmigung von @chaosradio\">";
 podcast_logodata["ep"]="<img src=\"http://shownot.es/img/logos/ep_logo.png\" width=\"150\" height=\"150\" alt=\"Einschlafen Podcast Logo\">";
 podcast_logodata["fan"]="<img src=\"http://shownot.es/img/logos/fan_logo.png\" width=\"150\" height=\"150\" alt=\"Fanb0ys Logo\">";
@@ -261,6 +263,7 @@ podcast_urldata["bm"]="http://www.fritz.de/media/podcasts/sendungen/blue_moon.ht
 podcast_urldata["bmll"]="CONCAT:bm,ll";
 podcast_urldata["ll"]="http://www.lateline.de/";
 podcast_urldata["abs"]="http://absradio.de/";
+podcast_urldata["culinaricast"]="http://culinaricast.de/";
 podcast_urldata["cr"]="http://chaosradio.ccc.de/";
 podcast_urldata["ep"]="http://einschlafen-podcast.de/";
 podcast_urldata["ep"]="http://fanboys.fm/";
@@ -291,6 +294,7 @@ podcast_namedata["bm"]="Blue Moon";
 podcast_namedata["bmll"]="CONCAT:bm,ll";
 podcast_namedata["ll"]="LateLine";
 podcast_namedata["abs"]="ABSradio";
+podcast_namedata["culinaricast"]="Culinaricast";
 podcast_namedata["cr"]="Chaosradio";
 podcast_namedata["ep"]="Einschlafen Podcast";
 podcast_namedata["fan"]="Fanb0ys";
@@ -487,7 +491,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 
 	archivable="yes";
     #podcasts always using three-digit-numbering
-    elif test "$podcast_slug" = "qs" || test "$podcast_slug" = "rl" || test "$podcast_slug" = "abs" || test "$podcast_slug" = "ng" || test "$podcast_slug" = "wmr" || test "$podcast_slug" = "jc" || test "$podcast_slug" = "mm" || test "$podcast_slug" = "osm" || test "$podcast_slug" = "lecast"; then
+    elif test "$podcast_slug" = "qs" || test "$podcast_slug" = "rl" || test "$podcast_slug" = "abs" || test "$podcast_slug" = "ng" || test "$podcast_slug" = "wmr" || test "$podcast_slug" = "jc" || test "$podcast_slug" = "mm" || test "$podcast_slug" = "osm" || test "$podcast_slug" = "lecast" || test "$podcast_slug" = "culinaricast"; then
 	archive_path+="$podcast_slug";
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
