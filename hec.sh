@@ -410,7 +410,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 
 
     #strip leading characters, also those that are null, dashes or underscores
-    episode_number="$(echo "$episode" | grep -o "[-_0-9]\\+$")";
+    episode_number="$(echo "$episode" | grep -o "[-_0-9]\\+" | tail -n 1)";
     if $(echo "$episode_number" | grep -q "^[-_]\\+"); then
 	episode_number="$(echo "$episode_number" | sed "s/^[-_]\\+//")";
     fi;
