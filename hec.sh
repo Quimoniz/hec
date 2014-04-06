@@ -975,7 +975,9 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 #    echo "$sendungsseite";
 #    echo "$podcaster"
 #    echo "$shownoter";
-    echo "$archive_path/$archive_filename" > "${hec_path}/${write_outpath}";
+    if test -n "${write_outpath}"; then
+        echo "$archive_path/$archive_filename" > "${hec_path}/${write_outpath}";
+    fi;
     exit 0;
 else
     echo "" > "${hec_path}/${write_outpath}";
