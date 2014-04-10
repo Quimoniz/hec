@@ -128,7 +128,7 @@ function use_parser {
         echo -n $'&tags=chapter+section+spoiler+topic+embed+video+audio+image+shopping+glossary+source+app+title+quote&amazon=shownot.es-21&thomann=93439&fullmode=true' >> "$tmp_file";
 #tradedoubler doesn't work
 #&tradedoubler=16248286
-        echo "$(wget --post-file="$tmp_file" -O - "http://tools.shownot.es/parsersuite-old/export.php?mode=getpad" 2>/dev/null | sed "s/&#8221;/\\&#8220;/g")";
+        echo "$(wget --post-file="$tmp_file" -O - "http://tools.shownot.es/parsersuite-old/export.php?mode=getpad" 2>/dev/null | sed "s/&#8221;/\\&#8220;/g;s/&quot;\\([-_,.;]\\)/\\&#8220;\\1/;")";
         rm "$tmp_file" 2>/dev/null;
     elif test "wp-osf-shownotes" = "${parser_version}"; then
         local query_file="$(mktemp)";
