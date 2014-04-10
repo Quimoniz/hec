@@ -7,7 +7,7 @@ In order to do so, it requires a parameter $padname to be specified upon invocat
 
 Dependencies
 ------------
-Mainly GNU Linux. Most notably GNU bash, followed by GNU sed, and a lot of other commands which are shipped with a GNU Linux distro. I use the default **Ubuntu** to run the script. Trying to run the script on a Mac will probably fail, due to that grep and sed implementations differ.
+Mainly GNU Linux. Most notably GNU bash, followed by GNU sed, GNU dc, and a lot of other commands which are shipped with a GNU Linux distro. I use the default **Ubuntu** to run the script. Trying to run the script on a Mac will ~~probably~~ fail, due to that the implementations of grep, sed, dc, and mktemp (among others) differ.
 
 License
 -------
@@ -41,6 +41,13 @@ For example `bash hec.sh einschlafen-230`.
 The script then requests the pad's contents, parses them, assumes a path name for the HTML output, writes to to it, and invokes the browser to present a preview.
 
 **Note** that you may also specify an additional parameter `--preview` which adds a warning label to the output, stating that it is still in revision.
+
+Security Considerations
+-----------------------
+*Bwahahahahaha*
+
+I assume it can be easily exploited by inserting code into the external text source.  However, I will give out a reward of 20 Euros to anyone who can first show a particular vulnerability, and tell me how to fix it.
+
 
 Reference
 ---------
@@ -79,6 +86,6 @@ header fields:
         <td>episodetitle</td><td>optional</td><td>the specific title of this particular episode</td>
     </tr>
     <tr>
-        <td>chatlog</td><td>optional</td><td>an optional link to a chat log, as used for NSFW</td>
+        <td>chatlog</td><td>deprecated</td><td>an optional link to a chat log, as has been used for NSFW (has to be enabled in config)</td>
     </tr>
 </table>

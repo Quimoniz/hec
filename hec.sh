@@ -47,6 +47,8 @@ parser_mode="anycast-full";
 parser_version="osfregex"
 preview_browser="firefox";
 write_outpath="";
+chatlog_deprecated="TRUE";
+
 if test -f "${config_file}"; then
     while read; do
         if grep -qi "^include=" <<< "$REPLY"; then
@@ -65,6 +67,8 @@ if test -f "${config_file}"; then
             parser_mode="$(grep -i "^parser_mode=" <<< "$REPLY" | tail -n 1 | sed "s/^.\\{12\\}//;")";
         elif grep -qi "^write_outpath=" <<< "$REPLY"; then
             write_outpath="$(grep -i "^write_outpath=" <<< "$REPLY" | tail -n 1 | sed "s/^.\\{14\\}//;")";
+        elif grep -qi "^chatlog_deprecated=" <<< "$REPLY"; then
+            chatlog_deprecated="$(grep -i "^chatlog_deprecated=" <<< "$REPLY" | tail -n 1 | sed "s/^.\\{19\\}//;")";
         fi;
     done < "${config_file}";
 fi;
@@ -83,6 +87,7 @@ echo $'# - wp-osf-shownotes, one of\n#   - "block"/"block style"/"button style"\
 echo "parser_mode=${parser_mode}" >> ".hec_config";
 echo $'# specially write where I wrote' >> ".hec_config";
 echo "write_outpath=${write_outpath}" >> ".hec_config";
+echo "chatlog_deprecated=${chatlog_deprecated}" >> ".hec_config";
 
 preview_file="${hec_path}/${preview_file}";
 url_cache_path="${hec_path}/url_cache.dat";
@@ -348,7 +353,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	sendungsseite="$(echo "$padheader" | grep -i "^sendungsseite:\\?" | tail -n 1  | sed "s/^.\\{13\\}:\\? *//;s/[\\t ]*$//;")";
     fi;
     episodetitle="$(echo "$padheader" | grep -i "^episodetitle:" | tail -n 1  | sed "s/^.\\{13\\} *//;s/[\\t ]*$//;")";
-    chatlog="$(echo "$padheader" | grep -i "^chatlogs\\?:\\?" | tail -n 1  | sed "s/^[Cc][Hh][Aa][Tt][Ll][Oo][Gg][Ss]\\?:\\? *//;s/[\\t ]*$//;")";
+    chatlog_url="$(echo "$padheader" | grep -i "^chatlogs\\?:\\?" | tail -n 1  | sed "s/^[Cc][Hh][Aa][Tt][Ll][Oo][Gg][Ss]\\?:\\? *//;s/[\\t ]*$//;")";
     sendungstitel="$(echo "$episode" | tail -n 1 | sed "s/-/ /g; s/0\\+\\([0-9]\\+\\)$/\\1/;s/[\\t ]*$//;")";
     sendungstitel="$(echo "$sendungstitel" | grep -o "^." | tr "[:lower:]" "[:upper:]")$(echo "$sendungstitel" | tail --bytes=$(($(echo "$sendungstitel" | wc --chars) - 1)))";
     description_titel="Aus dem Pad";
@@ -358,7 +363,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     webseite="$(echo "$webseite" | sed "s/^<//; s/>$//")";
     sendungsseite="$(echo "$sendungsseite" | sed "s/^<//; s/>$//")";
 
-    chatlog="$(echo "$chatlog" | sed "s/^<//; s/>$//")";
+    chatlog_url="$(echo "${chatlog_url}" | sed "s/^<//; s/>$//")";
 
     tmp_name="$(echo "$podcast_name" | tr "[:upper:]" "[:lower:]")";
     podcast_slug="${podcast_slugdata["$tmp_name"]}";
@@ -909,27 +914,30 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     echo $'      </tr>\n      <tr>\n        <td title="In alphabetischer Reihenfolge">Shownoter</td>\n        <td>' | tee -a "$shownotes_header_tmp";
     bash "${hec_path}/form-userlist.sh" cache="${url_cache_path}" "$shownoter" | sed "s/^\\(.*\\)/          \\1/" | tee -a "$shownotes_header_tmp";
     echo $'	</td>\n      </tr>' | tee -a "$shownotes_header_tmp";
-    if test -n "$chatlog"; then
-	echo $'      <tr>' | tee -a "$shownotes_header_tmp";
-	host_of_chatlog="$(echo "$chatlog" | sed "s/^[a-zA-Z0-9]\\+:\\/\\{0,2\\}//; s/\\(\\.[-_%a-zA-Z0-9]\\+\\)\\(:[0-9]\\+\\)\\?\\(\\/[^/#]*\\)*\\(#.*\\)\\?$/\\1/")";
-	if $(echo "$host_of_chatlog" | grep -q "^#"); then
-	    host_of_chatlog="";
-	else
-	    host_of_chatlog="$(echo "$host_of_chatlog" | sed "s/\\.\\([Cc][Oo][Mm]\\|[Dd][Ee]\\|[Tt][Kk]\\|[Oo][Rr][Gg]\\)$//")";
-	fi;
-	echo $'        <td title="Bei Verletzung der eigenen Privatsphäre bitte uns kontaktieren, wir werden uns dann darum bemühen denjenigen rauszufiltern">Chatlog</td>' | tee -a "$shownotes_header_tmp";
-	echo -n $'        <td>\n          <a href="' | tee -a "$shownotes_header_tmp";
-	echo "$chatlog" | tee -a "$shownotes_header_tmp";
-	echo -n '">' | tee -a "$shownotes_header_tmp";
-	if test -n "$host_of_chatlog"; then
-	    echo -n "&lt;$host_of_chatlog&gt;" | tee -a "$shownotes_header_tmp";
-	elif test -n "$chatlog"; then
-	    echo -n "&lt;$chatlog&gt;" | tee -a "$shownotes_header_tmp";
-	else
-	    echo -n "keines" | tee -a "$shownotes_header_tmp";
-	fi;
-        echo $'</a>\n        </td>' | tee -a "$shownotes_header_tmp";
-	echo $'      </tr>' | tee -a "$shownotes_header_tmp";
+    
+    if test "FALSE" = "${chatlog_deprecated}"; then
+        if test -n "${chatlog_url}"; then
+	    echo $'      <tr>' | tee -a "$shownotes_header_tmp";
+	    host_of_chatlog="$(echo "${chatlog_url}" | sed "s/^[a-zA-Z0-9]\\+:\\/\\{0,2\\}//; s/\\(\\.[-_%a-zA-Z0-9]\\+\\)\\(:[0-9]\\+\\)\\?\\(\\/[^/#]*\\)*\\(#.*\\)\\?$/\\1/")";
+	    if $(echo "$host_of_chatlog" | grep -q "^#"); then
+		host_of_chatlog="";
+	    else
+		host_of_chatlog="$(echo "$host_of_chatlog" | sed "s/\\.\\([Cc][Oo][Mm]\\|[Dd][Ee]\\|[Tt][Kk]\\|[Oo][Rr][Gg]\\)$//")";
+	    fi;
+	    echo $'        <td title="Bei Verletzung der eigenen Privatsphäre bitte uns kontaktieren, wir werden uns dann darum bemühen denjenigen rauszufiltern">Chatlog</td>' | tee -a "$shownotes_header_tmp";
+	    echo -n $'        <td>\n          <a href="' | tee -a "$shownotes_header_tmp";
+	    echo "${chatlog_url}" | tee -a "$shownotes_header_tmp";
+	    echo -n '">' | tee -a "$shownotes_header_tmp";
+	    if test -n "$host_of_chatlog"; then
+    		echo -n "&lt;$host_of_chatlog&gt;" | tee -a "$shownotes_header_tmp";
+    	    elif test -n "${chatlog_url}"; then
+    		echo -n "&lt;${chatlog_url}&gt;" | tee -a "$shownotes_header_tmp";
+    	    else
+    		echo -n "keines" | tee -a "$shownotes_header_tmp";
+    	    fi;
+            echo $'</a>\n        </td>' | tee -a "$shownotes_header_tmp";
+    	    echo $'      </tr>' | tee -a "$shownotes_header_tmp";
+        fi;
     fi;
     echo $'    </table>\n  </div>\n</div>' | tee -a "$shownotes_header_tmp";
 

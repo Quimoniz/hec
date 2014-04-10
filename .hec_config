@@ -39,3 +39,4 @@ parser_version=osfregex
 parser_mode=anycast-full
 # specially write where I wrote
 write_outpath=
+chatlog_deprecated=TRUE
