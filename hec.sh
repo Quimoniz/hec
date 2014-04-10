@@ -124,7 +124,7 @@ function use_parser {
         local parser_mode="$1";
         local padtext="$2";
         echo -n "exportmode=$parser_mode&shownotes=" > "$tmp_file";
-        echo "$padtext" | sed "s/%/%25/g; s/#/%23/g; s/&/%26/g; s/\\\\n/%0A/g; s/\\\\\"/%22/g; s/ /%20/g" >> "$tmp_file";
+        echo "$padtext" | sed "s/%/%25/g; s/#/%23/g; s/&/%26/g; s/+/%2b/g; s/\\\\n/%0A/g; s/\\\\\"/%22/g; s/ /%20/g" >> "$tmp_file";
         echo -n $'&tags=chapter+section+spoiler+topic+embed+video+audio+image+shopping+glossary+source+app+title+quote&amazon=shownot.es-21&thomann=93439&fullmode=true' >> "$tmp_file";
 #tradedoubler doesn't work
 #&tradedoubler=16248286
@@ -402,7 +402,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	has_proper_date="yes";
         broadcast_timestamp="$(date --date="$starttime" +%s)";
     #only parse something like 22.04.2013 21:10:16
-    elif echo "$starttime" | grep -qi "^\\(0[1-9]\\|[12][0-9]\\|3[01]\\)\\.\\(0[1-9]\\|1[0-2]\\)\\.[0-9]\\{4\\} \\([01][0-9]\\|2[0-3]\\):[0-5][0-9]:[0-5][0-9]"; then
+    elif echo "$starttime" | grep -qi "^\\(0[1-9]\\|[12][0-9]\\|3[01]\\)\\.\\(0[1-9]\\|1[0-2]\\)\\.[0-9]\\{4\\} *\\([01][0-9]\\|2[0-3]\\):[0-5][0-9]:[0-5][0-9]"; then
 	broadcast_year="$(echo "$starttime" | sed "s/^.\\{6\\}\\([0-9]\\{4\\}\\).*/\\1/" | head -n 1)";
 	broadcast_month="$(echo "$starttime" | sed "s/^.\\{3\\}0\\?\\([0-9]\\{1,2\\}\\).*/\\1/")";
 	broadcast_day="$(echo "$starttime" | sed "s/^0\\?\\([0-9]\\{1,2\\}\\).*/\\1/")";
@@ -413,7 +413,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 
 
 
-    #strip leading characters, also those that are null, dashes or underscores
+    #match any number of consecutive numbers, keep only the last match
     episode_number="$(echo "$episode" | grep -o "[-_]*[0-9]\\+" | tail -n 1)";
     if $(echo "$episode_number" | grep -q "^[-_0-9]\\+"); then
 	episode_number="$(echo "$episode_number" | sed "s/^[-_]\\+//")";
@@ -503,6 +503,8 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
             archive_filename="$archive_number.FS-$archive_number.html";
         elif test "lecast" = "$podcast_slug"; then
             archive_filename="$archive_number.LeCast-$archive_number.html";
+        elif test "culinaricast" = "$podcast_slug"; then
+            archive_filename="$archive_number.${podcast_namedata[${podcast_slug}]}-$archive_number.html";
 	else
             archive_filename="$archive_number.$(echo "$podcast_slug" | tr "[:lower:]" "[:upper:]")-$archive_number.html";
 	fi;
@@ -729,11 +731,18 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 #    archivable="no";
 #    exit 0;
 
-    #nsfw has a guessable $sendungsseite
-    if test "$podcast_slug" = "nsfw" && $(echo "$sendungsseite" | grep -q "^ *$"); then
-	sendungsseite="http://not-safe-for-work.de/nsfw$archive_number/";
+    #cre,nsfw and rl have guessable $sendungsseite
+    if $(echo "$sendungsseite" | grep -q "^ *$"); then
+        if test "$podcast_slug" = "cre"; then
+            sendungsseite="http://cre.fm/cre$archive_number/";
+        elif test "$podcast_slug" = "nsfw"; then
+            sendungsseite="http://not-safe-for-work.de/nsfw$archive_number/";
+        elif test "$podcast_slug" = "rl"; then
+            sendungsseite="http://www.robotiklabor.de/rl$archive_number/";
+        fi;
     fi;
 
+    #set $episodetitle
     if test -n "$episodetitle" && $(echo -n "$episodetitle" | grep -q $'.\\+'); then
 	sendungstitel="$episodetitle";
         description_titel="Entnommen aus dem Feld \"episodetitle\" im Pad";
@@ -756,6 +765,8 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	    #in case the page's title contains multiple dashes "-", we shall check,
 	    #  whether the first dash was used to separate episode number from it's title
 		if test $(echo "$sendungstitel" | grep -o " - " | grep -c " - ") -gt 1; then
+                    #in case the title contains the podcast's slug or the episode's number,
+                    #  at the beginning, it will be stripped
 		    if $(echo "$sendungstitel" | grep -qi "^ *\\($podcast_slug[-_ ]\\?\\)\\? *\\(0*$archive_number\\|$episode_number\\)[-_ ]*"); then
 			sendungstitel="$(echo "$sendungstitel" | sed "s/^\\([^-]*-[^-]*\\)-.*$/\\1/; s/[-_ ]$//")";
 
@@ -771,7 +782,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     fi;
 
 
-    #we dump to stdout and to a temporaty file
+    #we dump to stdout and to a temporary file
     #  so that we can save it as preview and possibly also into archive
     touch "$preview_file";
     cat "${hec_path}/preview-prepend.txt" > "$preview_file";
