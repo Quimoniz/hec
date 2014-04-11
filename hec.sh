@@ -108,12 +108,18 @@ fi;
 
 function getpad {
     local padname="$1";
-    
+    local target_url="";    
+
     if test "$padname" = ""; then
 	echo "";
 	false;
     else
-	json_data="$(wget -O - "${showpad_url}$padname/text?t=0" 2>/dev/null)";
+        if grep -qi "^https\\?://" <<< "${padname}"; then
+            target_url="${padname}";
+        else
+            target_url="${showpad_url}${padname}";
+        fi;
+	json_data="$(wget -O - "${target_url}/text?t=0" 2>/dev/null)";
 	data="$(echo "$json_data" | grep "\"text\": " | sed "s/^  \"text\": \"\\(\\([^\"]\\|\\\"\\)*\\)\"/\\1/")";
 	echo "$data" | head --bytes=-1;
     fi;
