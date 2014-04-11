@@ -158,9 +158,27 @@ function use_parser {
         echo "${parsed_text}";
     fi;
 }
-padtext="$(parse_text "$(getpad "$padname")")";
 
+#obtain the source text
+padtext="";
+if grep -qi "^file://" <<< "${padname}"; then
+    path_to_padtext="$(sed "s/^.\\{4\\}:\\/\\///;" <<< "${padname}")";
+    if test -f "${path_to_padtext}"; then
+        padtext="$(cat "${path_to_padtext}")";
+    else
+        echo "Error: File \"${path_to_padtext}\" does not exist.";
+        exit 1;
+    fi;
+else
+    padtext="$(getpad "$padname")";
+fi;
+
+#filter
+padtext="$(parse_text "${padtext}")";
+
+#use simon's parser
 padhtml="$(use_parser "${parser_mode}" "$padtext")";
+
 #set mailto: and bitcoin: links
 padhtml="$(echo "$padhtml" | sed "s/<span class=\"\\([^\"]*\\)\"\\( data-tooltip=\"[^\"]*\"\\|\\)>\\(\\([^<&]\\|[^<&][^<l]\\|[^<&][^<l][^<t]\\|[^<&][^<l][^<t][^<;]\\)\\+\\) &lt;[Mm][Aa][Ii][Ll][Tt][Oo]:\\([^@<>]\\+@[^@<>]\\+\\)&gt;<\\/span>/<a href=\"mailto:\\5\" class=\"\\1\"\\2>\\3<\\/a>/g; s/<span class=\"\\([^\"]*\\)\"\\( data-tooltip=\"[^\"]*\"\\|\\)>\\(\\([^<&]\\|[^<&][^<l]\\|[^<&][^<l][^<t]\\|[^<&][^<l][^<t][^<;]\\)\\+\\) &lt;[Bb][Ii][Tt][Cc][Oo][Ii][Nn]:\\([a-zA-Z0-9]\\+\\)&gt;<\\/span>/<a href=\"bitcoin:\\5\" class=\"\\1\"\\2>\\3<\\/a>/g")";
 
@@ -999,6 +1017,8 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     fi;
     exit 0;
 else
-    echo "" > "${hec_path}/${write_outpath}";
+    if test -n "${write_outpath}"; then
+        echo "" > "${hec_path}/${write_outpath}";
+    fi;
     exit 1;
 fi;
