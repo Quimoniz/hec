@@ -17,6 +17,16 @@ s/^.*<(.*)>.*/\1/;
 s/\+/%2B/g;
 #prepend "http://" if a link begins with three double-ues
 s/^([Ww]{3})\./http:\/\/\1/;
+
+#Replace http with https
+s/^[Hh][Tt][Tt][Pp]:\/\/([a-zA-Z]+\.wikipedia\.org.*)/https:\/\/\1/i;
+s/^[Hh][Tt][Tt][Pp]:\/\/(www\.)?(youtube\.com.*)/https:\/\/\1\2/i;
+s/^[Hh][Tt][Tt][Pp]:\/\/(www\.)?(twitter\.com.*)/https:\/\/\1\2/i;
+s/^[Hh][Tt][Tt][Pp]:\/\/([a-zA-Z]+\.)?(app\.net.*)/https:\/\/\1\2/i;
+s/^[Hh][Tt][Tt][Pp]:\/\/([a-zA-Z]+\.)?(github\.com.*)/https:\/\/\1\2/i;
+s/^[Hh][Tt][Tt][Pp]:\/\/([a-zA-Z]+\.)?(amazon.(de|com).*)/https:\/\/\1\2/i;
+
+
 #Append the current pattern space to hold space (with a newline in between)
 #  so we get into the hold space:
 #     the original content of the line
