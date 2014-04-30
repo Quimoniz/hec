@@ -524,7 +524,18 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 
 	archivable="yes";
     #podcasts always using three-digit-numbering
-    elif test "$podcast_slug" = "qs" || test "$podcast_slug" = "rl" || test "$podcast_slug" = "abs" || test "$podcast_slug" = "ng" || test "$podcast_slug" = "wmr" || test "$podcast_slug" = "jc" || test "$podcast_slug" = "mm" || test "$podcast_slug" = "osm" || test "$podcast_slug" = "lecast" || test "$podcast_slug" = "culinaricast" || test "$podcast_slug" = "cre"; then
+    elif test "$podcast_slug" = "qs" || \
+         test "$podcast_slug" = "rl" || \
+         test "$podcast_slug" = "abs" || \
+         test "$podcast_slug" = "ng" || \
+         test "$podcast_slug" = "wmr" || \
+         test "$podcast_slug" = "jc" || \
+         test "$podcast_slug" = "mm" || 
+         test "$podcast_slug" = "osm" || \
+         test "$podcast_slug" = "lecast" || \
+         test "$podcast_slug" = "culinaricast" || \
+         test "$podcast_slug" = "cre" || \
+         test "$podcast_slug" = "wg"; then
 	archive_path+="$podcast_slug";
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
@@ -534,6 +545,8 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
             archive_filename="$archive_number.LeCast-$archive_number.html";
         elif test "culinaricast" = "$podcast_slug"; then
             archive_filename="$archive_number.${podcast_namedata[${podcast_slug}]}-$archive_number.html";
+        elif test "wg" = "$podcast_slug"; then
+            archive_filename="${archive_number}.${podcast_namedata[${podcast_slug}]}-${episode_number}.html";
 	else
             archive_filename="$archive_number.$(echo "$podcast_slug" | tr "[:lower:]" "[:upper:]")-$archive_number.html";
 	fi;
@@ -548,7 +561,8 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
         fi;
 	description_titel="Automatisch generiert";
 	archivable="yes";
-    elif test "$podcast_slug" = "cr" || test "$podcast_slug" = "sozio"; then
+    elif test "$podcast_slug" = "cr" || \
+         test "$podcast_slug" = "sozio"; then
 	archive_path+="$podcast_slug";
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
@@ -581,7 +595,10 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	archive_filename="$archive_number.$sendungstitel.html";
 	description_titel="Automatisch generiert";
 	archivable="yes";
-    elif test "$podcast_slug" = "nsfw" || test "$podcast_slug" = "ep" || test "$podcast_slug" = "pp" || test "$podcast_slug" = "se"; then
+    elif test "$podcast_slug" = "nsfw" || \
+         test "$podcast_slug" = "ep" || \
+         test "$podcast_slug" = "pp" || \
+         test "$podcast_slug" = "se"; then
 	archive_path+="$podcast_slug";
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
@@ -593,7 +610,8 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
         fi;
 	description_titel="Automatisch generiert";
 	archivable="yes";
-    elif test "$podcast_slug" = "hoaxilla" || test "$podcast_slug" = "fan"; then
+    elif test "$podcast_slug" = "hoaxilla" || \
+         test "$podcast_slug" = "fan"; then
 	archive_path+="$podcast_slug";
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
@@ -768,6 +786,10 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
             sendungsseite="http://not-safe-for-work.de/nsfw$archive_number/";
         elif test "$podcast_slug" = "rl"; then
             sendungsseite="http://www.robotiklabor.de/rl$archive_number/";
+        elif test "${podcast_slug}" = "wg"; then
+            sendungsseite="http://wikigeeks.de/wg${archive_number}";
+        elif test "${podcast_slug}" = "cr"; then
+            sendungsseite="http://chaosradio.ccc.de/cr${episode_number}.html";
         fi;
     fi;
 
