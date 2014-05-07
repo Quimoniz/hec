@@ -253,6 +253,7 @@ podcast_slugdata["wir-mussen-reden"]="wmr";
 podcast_slugdata["wir-muessen-reden"]="wmr";
 podcast_slugdata["wrint"]="wrint";
 podcast_slugdata["realitaetsabgleich"]="ra";
+podcast_slugdata["staatsbuergerkunde"]="sbk";
 podcast_slugdata["wrintheit"]="wrintheit";
 podcast_slugdata["flaschen"]="flaschen";
 
@@ -285,6 +286,7 @@ podcast_logodata["wg"]="<img src=\"http://shownot.es/img/logos/wg_logo.png\" wid
 podcast_logodata["wmr"]="<img src=\"http://shownot.es/img/logos/wmr_logo.png\" width=\"150\" height=\"150\" alt=\"Wir. Müssen Reden Logo\">";
 podcast_logodata["wrint"]="<img src=\"http://shownot.es/img/logos/wr_logo.png\" width=\"150\" height=\"150\" alt=\"WRINT Logo\" title=\"WRINT Logo, Verwendung mit freundlicher Genehmigung von Holger Klein, Lizenz: CC BY-NC-SA, siehe http://creativecommons.org/licenses/by-nc-sa/3.0/\">";
 podcast_logodata["ra"]="<img src=\"http://shownot.es/img/logos/ra_logo.png\" width=\"150\" height=\"150\" alt=\"WRINT Realitaetsabgleich Logo\" title=\"WRINT Realitätsabgleich Logo, Verwendung mit freundlicher Genehmigung von Holger Klein, Lizenz: CC BY-NC-SA, siehe http://creativecommons.org/licenses/by-nc-sa/3.0/\">";
+podcast_logodata["sbk"]="<img src=\"http://shownot.es/img/logos/staatsbuergerkunde_logo.png\" width=\"150\" height=\"150\" alt=\"Staatsbuergerkunde Logo\">";
 podcast_logodata["wrintheit"]="<img src=\"http://shownot.es/img/logos/wrint_logo.png\" width=\"150\" height=\"150\" alt=\"WRINT Wrintheit Logo\" title=\"WRINT Wrintheit Logo, Verwendung mit freundlicher Genehmigung von Holger Klein, Lizenz: CC BY-NC-SA, siehe http://creativecommons.org/licenses/by-nc-sa/3.0/\">";
 podcast_logodata["flaschen"]="<img src=\"http://shownot.es/img/logos/fl_logo.png\" width=\"150\" height=\"150\" alt=\"WRINT Flaschen Logo\" title=\"WRINT Flaschen Logo, Verwendung mit freundlicher Genehmigung von Holger Klein, Lizenz: CC BY-NC-SA, siehe http://creativecommons.org/licenses/by-nc-sa/3.0/\">";
 
@@ -314,6 +316,7 @@ podcast_urldata["rl"]="http://www.robotiklabor.de/";
 podcast_urldata["dss"]="http://die-sondersendung.de/";
 podcast_urldata["se"]="http://schoene-ecken.de/";
 podcast_urldata["sozio"]="http://soziopod.de/";
+podcast_urldata["sbk"]="http://www.staatsbuergerkunde-podcast.de/";
 podcast_urldata["wg"]="http://wikigeeks.de/";
 podcast_urldata["wmr"]="http://wir.muessenreden.de/";
 podcast_urldata["wrint"]="http://www.wrint.de/";
@@ -346,6 +349,7 @@ podcast_namedata["rl"]="Robotiklabor";
 podcast_namedata["dss"]="Die Sondersendung";
 podcast_namedata["se"]="Schöne Ecken";
 podcast_namedata["sozio"]="Soziopod";
+podcast_namedata["sbk"]="Staatsb&uuml;rgerkunde";
 podcast_namedata["wg"]="Wikigeeks";
 podcast_namedata["wmr"]="Wir. M&uuml;ssen Reden";
 podcast_namedata["wrint"]="WRINT";
@@ -524,18 +528,19 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 
 	archivable="yes";
     #podcasts always using three-digit-numbering
-    elif test "$podcast_slug" = "qs" || \
-         test "$podcast_slug" = "rl" || \
-         test "$podcast_slug" = "abs" || \
-         test "$podcast_slug" = "ng" || \
-         test "$podcast_slug" = "wmr" || \
-         test "$podcast_slug" = "jc" || \
-         test "$podcast_slug" = "mm" || 
-         test "$podcast_slug" = "osm" || \
-         test "$podcast_slug" = "lecast" || \
-         test "$podcast_slug" = "culinaricast" || \
+    elif test "$podcast_slug" = "abs" || \
          test "$podcast_slug" = "cre" || \
-         test "$podcast_slug" = "wg"; then
+         test "$podcast_slug" = "culinaricast" || \
+         test "$podcast_slug" = "jc" || \
+         test "$podcast_slug" = "lecast" || \
+         test "$podcast_slug" = "mm" || 
+         test "$podcast_slug" = "ng" || \
+         test "$podcast_slug" = "osm" || \
+         test "$podcast_slug" = "qs" || \
+         test "$podcast_slug" = "rl" || \
+         test "$podcast_slug" = "sbk" || \
+         test "$podcast_slug" = "wg" || \
+         test "$podcast_slug" = "wmr"; then
 	archive_path+="$podcast_slug";
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
@@ -842,12 +847,12 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     #now we are generating the header's HTML
     echo $'<div class="info">\n  <div class="thispodcast">\n    <div class="podcastimg">' | tee -a "$shownotes_header_tmp";
     echo -n $'      ' | tee -a "$shownotes_header_tmp";
-    echo "${podcast_logodata[$podcast_slug]}" | tee -a "$shownotes_header_tmp";
+    echo "${podcast_logodata[${podcast_slug}]}" | tee -a "$shownotes_header_tmp";
     echo $'    </div>\n<?php\n' | tee -a "$shownotes_header_tmp";
     echo $'include "./../episodeselector.php";\ninsertselector();\n\n?>\n  </div>' | tee -a "$shownotes_header_tmp";
     echo $'  <div class="episodeinfo">\n    <table>\n      <tr>' | tee -a "$shownotes_header_tmp";
     echo -n $'        <td>Podcast' | tee -a "$shownotes_header_tmp";
-    if $(echo "${podcast_urldata[$podcast_slug]}" | grep -qi "^CONCAT:") || $(echo "${podcast_namedata[$podcast_slug]}" | grep -qi "^CONCAT:"); then
+    if grep -qi "^CONCAT:" <<< "${podcast_urldata[${podcast_slug}]}" || grep -qi "^CONCAT:" <<< "${podcast_namedata[${podcast_slug}]}"; then
 	echo -n $'s</td>\n        <td>\n' | tee -a "$shownotes_header_tmp";
 	
 	declare -a podcast_line_arr_name;
@@ -917,10 +922,10 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
         if test -n "$webseite"; then
             echo -n "$webseite" | tee -a "$shownotes_header_tmp";
         else
-            echo -n "${podcast_urldata[$podcast_slug]}" | tee -a "$shownotes_header_tmp";
+            echo -n "${podcast_urldata[${podcast_slug}]}" | tee -a "$shownotes_header_tmp";
         fi;
 	echo -n $'">' | tee -a "$shownotes_header_tmp";
-	echo -n "${podcast_namedata[$podcast_slug]}" | tee -a "$shownotes_header_tmp";
+	echo -n "${podcast_namedata[${podcast_slug}]}" | tee -a "$shownotes_header_tmp";
 	echo  "</a></td>" | tee -a "$shownotes_header_tmp";
     fi;
 
