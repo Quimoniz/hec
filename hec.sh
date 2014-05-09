@@ -258,13 +258,14 @@ podcast_slugdata["wrintheit"]="wrintheit";
 podcast_slugdata["flaschen"]="flaschen";
 
 declare -A podcast_logodata;
+podcast_logodata["abs"]="<img src=\"http://shownot.es/img/logos/abs_logo.png\" width=\"150\" height=\"150\" alt=\"ABSradio Logo\">";
 podcast_logodata["bm"]="<img src=\"http://shownot.es/img/logos/bm_logo.png\" width=\"150\" height=\"150\" alt=\"Blue Moon Logo (Foto: Ainhoa Pcb l flickr.com, CC: BY)\" title=\"Blue Moon Logo (Foto: Ainhoa Pcb l flickr.com, CC: BY)\">";
 podcast_logodata["bmll"]="<img src=\"http://shownot.es/img/logos/bmll_logo.png\" width=\"150\" height=\"150\" alt=\"Blue Moon/LateLine Logo (Foto des Blue Moons von Ainhoa Pcb l, CC: BY)\" title=\"Blue Moon/LateLine Logo (Foto des Blue Moons von Ainhoa Pcb l, CC: BY)\">";
 podcast_logodata["ll"]="<img src=\"http://shownot.es/img/logos/ll_logo.png\" width=\"150\" height=\"150\" alt=\"LateLine Logo\">";
-podcast_logodata["abs"]="<img src=\"http://shownot.es/img/logos/abs_logo.png\" width=\"150\" height=\"150\" alt=\"ABSradio Logo\">";
-podcast_logodata["culinaricast"]="<img src=\"http://shownot.es/img/logos/culinaricast_logo.png\" width=\"150\" height=\"150\" alt=\"Culinaricast Logo, Verwendung mit freundlicher Genehmigung von @culinaricast\">";
 podcast_logodata["cr"]="<img src=\"http://shownot.es/img/logos/cr_logo.png\" width=\"150\" height=\"150\" alt=\"Chaosradio Logo, Verwendung mit freundlicher Genehmigung von @chaosradio\">";
 podcast_logodata["cre"]="<img src=\"http://shownot.es/img/logos/cre_logo.png\" width=\"150\" height=\"150\" alt=\"CRE Logo, Verwendung mit freundlicher Genehmigung von @metaebene\">";
+podcast_logodata["culinaricast"]="<img src=\"http://shownot.es/img/logos/culinaricast_logo.png\" width=\"150\" height=\"150\" alt=\"Culinaricast Logo, Verwendung mit freundlicher Genehmigung von @culinaricast\">";
+podcast_logodata["dss"]="<img src=\"http://shownot.es/img/logos/sz_logo.png\" width=\"150\" height=\"150\" alt=\"Die Sondersendung Logo\">";
 podcast_logodata["ep"]="<img src=\"http://shownot.es/img/logos/ep_logo.png\" width=\"150\" height=\"150\" alt=\"Einschlafen Podcast Logo\">";
 podcast_logodata["fan"]="<img src=\"http://shownot.es/img/logos/fan_logo.png\" width=\"150\" height=\"150\" alt=\"Fanb0ys Logo\">";
 podcast_logodata["hoaxilla"]="<img src=\"http://shownot.es/img/logos/hoaxilla_logo.png\" width=\"150\" height=\"150\" alt=\"Hoaxilla Logo\">";
@@ -274,86 +275,85 @@ podcast_logodata["lk"]="<img src=\"http://shownot.es/img/logos/lk_logo.png\" wid
 podcast_logodata["mm"]="<img src=\"http://shownot.es/img/logos/fs_logo.png\" width=\"150\" height=\"150\" alt=\"Freak Show Logo\">";
 podcast_logodata["ng"]="<img src=\"http://shownot.es/img/logos/ng_logo.png\" width=\"150\" height=\"150\" alt=\"Netzgespräche Logo\">";
 podcast_logodata["nsfw"]="<img src=\"http://shownot.es/img/logos/nsfw_logo.png\" width=\"150\" height=\"150\" alt=\"NSFW Logo\">";
+podcast_logodata["osm"]="<img src=\"http://shownot.es/img/logos/osm_logo.png\" width=\"150\" height=\"150\" alt=\"Radio OSM Logo.\">"
 podcast_logodata["pp"]="<img src=\"http://shownot.es/img/logos/pp_logo.png\" width=\"150\" height=\"150\" alt=\"Pubkameraden Logo\">";
 podcast_logodata["psyt"]="<img src=\"http://shownot.es/img/logos/psyt_logo.png\" width=\"150\" height=\"150\" alt=\"Psychotalk Logo\">";
 podcast_logodata["qs"]="<img src=\"http://shownot.es/img/logos/qs_logo.png\" width=\"150\" height=\"150\" alt=\"Quasselstrippen Logo\">";
-podcast_logodata["osm"]="<img src=\"http://shownot.es/img/logos/osm_logo.png\" width=\"150\" height=\"150\" alt=\"Radio OSM Logo.\">"
 podcast_logodata["rl"]="<img src=\"http://shownot.es/img/logos/rl_logo.png\" width=\"150\" height=\"150\" alt=\"Robotiklabor Logo\">";
-podcast_logodata["dss"]="<img src=\"http://shownot.es/img/logos/sz_logo.png\" width=\"150\" height=\"150\" alt=\"Die Sondersendung Logo\">";
+podcast_logodata["sbk"]="<img src=\"http://shownot.es/img/logos/staatsbuergerkunde_logo.png\" width=\"150\" height=\"150\" alt=\"Staatsbuergerkunde Logo\">";
 podcast_logodata["se"]="<img src=\"http://shownot.es/img/logos/se_logo.png\" width=\"150\" height=\"150\" alt=\"Schöne Ecken Logo\">";
 podcast_logodata["sozio"]="<img src=\"http://shownot.es/img/logos/sozio_logo.png\" width=\"150\" height=\"150\" alt=\"Soziopod Logo\">";
 podcast_logodata["wg"]="<img src=\"http://shownot.es/img/logos/wg_logo.png\" width=\"150\" height=\"150\" alt=\"Wikigeeks Logo\">";
 podcast_logodata["wmr"]="<img src=\"http://shownot.es/img/logos/wmr_logo.png\" width=\"150\" height=\"150\" alt=\"Wir. Müssen Reden Logo\">";
 podcast_logodata["wrint"]="<img src=\"http://shownot.es/img/logos/wr_logo.png\" width=\"150\" height=\"150\" alt=\"WRINT Logo\" title=\"WRINT Logo, Verwendung mit freundlicher Genehmigung von Holger Klein, Lizenz: CC BY-NC-SA, siehe http://creativecommons.org/licenses/by-nc-sa/3.0/\">";
 podcast_logodata["ra"]="<img src=\"http://shownot.es/img/logos/ra_logo.png\" width=\"150\" height=\"150\" alt=\"WRINT Realitaetsabgleich Logo\" title=\"WRINT Realitätsabgleich Logo, Verwendung mit freundlicher Genehmigung von Holger Klein, Lizenz: CC BY-NC-SA, siehe http://creativecommons.org/licenses/by-nc-sa/3.0/\">";
-podcast_logodata["sbk"]="<img src=\"http://shownot.es/img/logos/staatsbuergerkunde_logo.png\" width=\"150\" height=\"150\" alt=\"Staatsbuergerkunde Logo\">";
 podcast_logodata["wrintheit"]="<img src=\"http://shownot.es/img/logos/wrint_logo.png\" width=\"150\" height=\"150\" alt=\"WRINT Wrintheit Logo\" title=\"WRINT Wrintheit Logo, Verwendung mit freundlicher Genehmigung von Holger Klein, Lizenz: CC BY-NC-SA, siehe http://creativecommons.org/licenses/by-nc-sa/3.0/\">";
 podcast_logodata["flaschen"]="<img src=\"http://shownot.es/img/logos/fl_logo.png\" width=\"150\" height=\"150\" alt=\"WRINT Flaschen Logo\" title=\"WRINT Flaschen Logo, Verwendung mit freundlicher Genehmigung von Holger Klein, Lizenz: CC BY-NC-SA, siehe http://creativecommons.org/licenses/by-nc-sa/3.0/\">";
 
 
 declare -A podcast_urldata;
+podcast_urldata["abs"]="http://absradio.de/";
 podcast_urldata["bm"]="http://www.fritz.de/media/podcasts/sendungen/blue_moon.html";
 podcast_urldata["bmll"]="CONCAT:bm,ll";
 podcast_urldata["ll"]="http://www.lateline.de/";
-podcast_urldata["abs"]="http://absradio.de/";
-podcast_urldata["culinaricast"]="http://culinaricast.de/";
 podcast_urldata["cr"]="http://chaosradio.ccc.de/";
 podcast_urldata["cre"]="http://cre.fm/";
+podcast_urldata["culinaricast"]="http://culinaricast.de/";
+podcast_urldata["dss"]="http://die-sondersendung.de/";
 podcast_urldata["ep"]="http://einschlafen-podcast.de/";
-podcast_urldata["ep"]="http://fanboys.fm/";
-podcast_urldata["jc"]="http://www.jobscast.de/";
+podcast_urldata["fan"]="http://fanboys.fm/";
 podcast_urldata["hoaxilla"]="http://www.hoaxilla.com/";
+podcast_urldata["jc"]="http://www.jobscast.de/";
 podcast_urldata["lecast"]="http://bullosamedia.de/";
 podcast_urldata["lk"]="http://1337kultur.de/";
 podcast_urldata["mm"]="http://freakshow.fm/";
 podcast_urldata["ng"]="http://www.netzgespräche.de/";
 podcast_urldata["nsfw"]="http://not-safe-for-work.de/";
+podcast_urldata["osm"]="http://blog.openstreetmap.de/radio-osm/";
 podcast_urldata["pp"]="http://www.pubkameraden.de/";
 podcast_urldata["psyt"]="http://www.psycho-talk.de/";
 podcast_urldata["qs"]="http://die-quasselstrippen.de/";
-podcast_urldata["osm"]="http://blog.openstreetmap.de/radio-osm/";
+podcast_urldata["ra"]="http://www.wrint.de/category/realitaetsabgleich";
 podcast_urldata["rl"]="http://www.robotiklabor.de/";
-podcast_urldata["dss"]="http://die-sondersendung.de/";
+podcast_urldata["sbk"]="http://www.staatsbuergerkunde-podcast.de/";
 podcast_urldata["se"]="http://schoene-ecken.de/";
 podcast_urldata["sozio"]="http://soziopod.de/";
-podcast_urldata["sbk"]="http://www.staatsbuergerkunde-podcast.de/";
 podcast_urldata["wg"]="http://wikigeeks.de/";
 podcast_urldata["wmr"]="http://wir.muessenreden.de/";
 podcast_urldata["wrint"]="http://www.wrint.de/";
-podcast_urldata["ra"]="http://www.wrint.de/category/realitaetsabgleich";
 podcast_urldata["wrintheit"]="http://www.wrint.de/category/wrintheit";
 podcast_urldata["flaschen"]="http://www.wrint.de/category/flaschen";
 
 declare -A podcast_namedata;
+podcast_namedata["abs"]="ABSradio";
 podcast_namedata["bm"]="Blue Moon";
 podcast_namedata["bmll"]="CONCAT:bm,ll";
 podcast_namedata["ll"]="LateLine";
-podcast_namedata["abs"]="ABSradio";
-podcast_namedata["culinaricast"]="Culinaricast";
 podcast_namedata["cr"]="Chaosradio";
 podcast_namedata["cre"]="CRE";
+podcast_namedata["culinaricast"]="Culinaricast";
+podcast_namedata["dss"]="Die Sondersendung";
 podcast_namedata["ep"]="Einschlafen Podcast";
 podcast_namedata["fan"]="Fanb0ys";
-podcast_namedata["jc"]="Jobscast";
 podcast_namedata["hoaxilla"]="Hoaxilla";
+podcast_namedata["jc"]="Jobscast";
 podcast_namedata["lecast"]="LeCast";
 podcast_namedata["lk"]="1337@kultur:~\$";
 podcast_namedata["mm"]="Freak Show";
 podcast_namedata["ng"]="Netzgespr&auml;che";
 podcast_namedata["nsfw"]="Not Safe For Work";
+podcast_namedata["osm"]="Radio OSM";
 podcast_namedata["pp"]="Pubkameraden";
 podcast_namedata["psyt"]="Psychotalk";
 podcast_namedata["qs"]="Quasselstrippen";
-podcast_namedata["osm"]="Radio OSM";
+podcast_namedata["ra"]="WRINT";
 podcast_namedata["rl"]="Robotiklabor";
-podcast_namedata["dss"]="Die Sondersendung";
+podcast_namedata["sbk"]="Staatsb&uuml;rgerkunde";
 podcast_namedata["se"]="Schöne Ecken";
 podcast_namedata["sozio"]="Soziopod";
-podcast_namedata["sbk"]="Staatsb&uuml;rgerkunde";
 podcast_namedata["wg"]="Wikigeeks";
 podcast_namedata["wmr"]="Wir. M&uuml;ssen Reden";
 podcast_namedata["wrint"]="WRINT";
-podcast_namedata["ra"]="WRINT";
 podcast_namedata["wrintheit"]="WRINT";
 podcast_namedata["flaschen"]="WRINT";
 
@@ -531,6 +531,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     elif test "$podcast_slug" = "abs" || \
          test "$podcast_slug" = "cre" || \
          test "$podcast_slug" = "culinaricast" || \
+         test "$podcast_slug" = "dss" || \
          test "$podcast_slug" = "jc" || \
          test "$podcast_slug" = "lecast" || \
          test "$podcast_slug" = "mm" || 
@@ -549,7 +550,9 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
         elif test "lecast" = "$podcast_slug"; then
             archive_filename="$archive_number.LeCast-$archive_number.html";
         elif test "culinaricast" = "$podcast_slug"; then
-            archive_filename="$archive_number.${podcast_namedata[${podcast_slug}]}-$archive_number.html";
+            archive_filename="$archive_number.${podcast_namedata[${podcast_slug}]}-${archive_number}.html";
+        elif test "dss" = "${podcast_slug}"; then
+            archive_filename="$archive_number.Sondersendung-${archive_number}.html";
         elif test "wg" = "$podcast_slug"; then
             archive_filename="${archive_number}.${podcast_namedata[${podcast_slug}]}-${episode_number}.html";
 	else
