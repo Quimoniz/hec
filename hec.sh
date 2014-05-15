@@ -789,15 +789,22 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     #cre,nsfw and rl have guessable $sendungsseite
     if $(echo "$sendungsseite" | grep -q "^ *$"); then
         if test "$podcast_slug" = "cre"; then
-            sendungsseite="http://cre.fm/cre$archive_number/";
+            sendungsseite="http://cre.fm/cre${archive_number}/";
         elif test "$podcast_slug" = "nsfw"; then
-            sendungsseite="http://not-safe-for-work.de/nsfw$archive_number/";
+            sendungsseite="http://not-safe-for-work.de/nsfw${archive_number}/";
         elif test "$podcast_slug" = "rl"; then
-            sendungsseite="http://www.robotiklabor.de/rl$archive_number/";
+            sendungsseite="http://www.robotiklabor.de/rl${archive_number}/";
         elif test "${podcast_slug}" = "wg"; then
             sendungsseite="http://wikigeeks.de/wg${archive_number}";
         elif test "${podcast_slug}" = "cr"; then
             sendungsseite="http://chaosradio.ccc.de/cr${episode_number}.html";
+        elif test "${podcast_slug}" = "mm"; then
+            sendungsseite="http://freakshow.fm";
+            if test 115 -ge ${episode_number}; then
+                sendungsseite+="/fs${archive_number}";
+            else
+                sendungsseite+="/mm${archive_number}";
+            fi;
         fi;
     fi;
 
