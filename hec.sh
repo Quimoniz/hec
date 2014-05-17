@@ -222,140 +222,50 @@ german_months[10]="Okt";
 german_months[11]="Nov";
 german_months[12]="Dez";
 
-declare -A podcast_slugdata;
-podcast_slugdata["bluemoon"]="bm";
-podcast_slugdata["bluemoon/lateline"]="bmll";
-podcast_slugdata["absradio"]="abs";
-podcast_slugdata["culinaricast"]="culinaricast";
-podcast_slugdata["chaosradio"]="cr";
-podcast_slugdata["cre"]="cre";
-podcast_slugdata["einschlafen"]="ep"
-podcast_slugdata["fanb0ys"]="fan";
-podcast_slugdata["freak-show"]="mm";
-podcast_slugdata["jobscast"]="jc";
-podcast_slugdata["hoaxilla"]="hoaxilla";
-podcast_slugdata["lecast"]="lecast";
-podcast_slugdata["1337kultur"]="lk";
-podcast_slugdata["mobilemacs"]="mm";
-podcast_slugdata["netzgesprache"]="ng";
-podcast_slugdata["netzgespraeche"]="ng";
-podcast_slugdata["nsfw"]="nsfw";
-podcast_slugdata["psychotalk"]="psyt";
-podcast_slugdata["pubkameraden"]="pp";
-podcast_slugdata["quasselstrippen"]="qs";
-podcast_slugdata["radio-osm"]="osm"
-podcast_slugdata["robotiklabor"]="rl";
-podcast_slugdata["schoene-ecken"]="se";
-podcast_slugdata["sondersendung"]="dss";
-podcast_slugdata["soziopod"]="sozio";
-podcast_slugdata["wikigeeks"]="wg";
-podcast_slugdata["wir-mussen-reden"]="wmr";
-podcast_slugdata["wir-muessen-reden"]="wmr";
-podcast_slugdata["wrint"]="wrint";
-podcast_slugdata["realitaetsabgleich"]="ra";
-podcast_slugdata["staatsbuergerkunde"]="sbk";
-podcast_slugdata["wrintheit"]="wrintheit";
-podcast_slugdata["flaschen"]="flaschen";
-
-declare -A podcast_logodata;
-podcast_logodata["abs"]="<img src=\"http://shownot.es/img/logos/abs_logo.png\" width=\"150\" height=\"150\" alt=\"ABSradio Logo\">";
-podcast_logodata["bm"]="<img src=\"http://shownot.es/img/logos/bm_logo.png\" width=\"150\" height=\"150\" alt=\"Blue Moon Logo (Foto: Ainhoa Pcb l flickr.com, CC: BY)\" title=\"Blue Moon Logo (Foto: Ainhoa Pcb l flickr.com, CC: BY)\">";
-podcast_logodata["bmll"]="<img src=\"http://shownot.es/img/logos/bmll_logo.png\" width=\"150\" height=\"150\" alt=\"Blue Moon/LateLine Logo (Foto des Blue Moons von Ainhoa Pcb l, CC: BY)\" title=\"Blue Moon/LateLine Logo (Foto des Blue Moons von Ainhoa Pcb l, CC: BY)\">";
-podcast_logodata["ll"]="<img src=\"http://shownot.es/img/logos/ll_logo.png\" width=\"150\" height=\"150\" alt=\"LateLine Logo\">";
-podcast_logodata["cr"]="<img src=\"http://shownot.es/img/logos/cr_logo.png\" width=\"150\" height=\"150\" alt=\"Chaosradio Logo, Verwendung mit freundlicher Genehmigung von @chaosradio\">";
-podcast_logodata["cre"]="<img src=\"http://shownot.es/img/logos/cre_logo.png\" width=\"150\" height=\"150\" alt=\"CRE Logo, Verwendung mit freundlicher Genehmigung von @metaebene\">";
-podcast_logodata["culinaricast"]="<img src=\"http://shownot.es/img/logos/culinaricast_logo.png\" width=\"150\" height=\"150\" alt=\"Culinaricast Logo, Verwendung mit freundlicher Genehmigung von @culinaricast\">";
-podcast_logodata["dss"]="<img src=\"http://shownot.es/img/logos/sz_logo.png\" width=\"150\" height=\"150\" alt=\"Die Sondersendung Logo\">";
-podcast_logodata["ep"]="<img src=\"http://shownot.es/img/logos/ep_logo.png\" width=\"150\" height=\"150\" alt=\"Einschlafen Podcast Logo\">";
-podcast_logodata["fan"]="<img src=\"http://shownot.es/img/logos/fan_logo.png\" width=\"150\" height=\"150\" alt=\"Fanb0ys Logo\">";
-podcast_logodata["hoaxilla"]="<img src=\"http://shownot.es/img/logos/hoaxilla_logo.png\" width=\"150\" height=\"150\" alt=\"Hoaxilla Logo\">";
-podcast_logodata["jc"]="<img src=\"http://shownot.es/img/logos/jc_logo.png\" width=\"150\" height=\"150\" alt=\"Jobscast Logo\">";
-podcast_logodata["lecast"]="<img src=\"http://shownot.es/img/logos/lecast_logo.png\" width=\"150\" height=\"150\" alt=\"LeCast Logo\">";
-podcast_logodata["lk"]="<img src=\"http://shownot.es/img/logos/lk_logo.png\" width=\"150\" height=\"150\" alt=\"1337kultur Logo cc-by-sa von 1337kultur.de\" title=\"1337kultur Logo cc-by-sa von 1337kultur.de\">";
-podcast_logodata["mm"]="<img src=\"http://shownot.es/img/logos/fs_logo.png\" width=\"150\" height=\"150\" alt=\"Freak Show Logo\">";
-podcast_logodata["ng"]="<img src=\"http://shownot.es/img/logos/ng_logo.png\" width=\"150\" height=\"150\" alt=\"Netzgespräche Logo\">";
-podcast_logodata["nsfw"]="<img src=\"http://shownot.es/img/logos/nsfw_logo.png\" width=\"150\" height=\"150\" alt=\"NSFW Logo\">";
-podcast_logodata["osm"]="<img src=\"http://shownot.es/img/logos/osm_logo.png\" width=\"150\" height=\"150\" alt=\"Radio OSM Logo.\">"
-podcast_logodata["pp"]="<img src=\"http://shownot.es/img/logos/pp_logo.png\" width=\"150\" height=\"150\" alt=\"Pubkameraden Logo\">";
-podcast_logodata["psyt"]="<img src=\"http://shownot.es/img/logos/psyt_logo.png\" width=\"150\" height=\"150\" alt=\"Psychotalk Logo\">";
-podcast_logodata["qs"]="<img src=\"http://shownot.es/img/logos/qs_logo.png\" width=\"150\" height=\"150\" alt=\"Quasselstrippen Logo\">";
-podcast_logodata["rl"]="<img src=\"http://shownot.es/img/logos/rl_logo.png\" width=\"150\" height=\"150\" alt=\"Robotiklabor Logo\">";
-podcast_logodata["sbk"]="<img src=\"http://shownot.es/img/logos/staatsbuergerkunde_logo.png\" width=\"150\" height=\"150\" alt=\"Staatsbuergerkunde Logo\">";
-podcast_logodata["se"]="<img src=\"http://shownot.es/img/logos/se_logo.png\" width=\"150\" height=\"150\" alt=\"Schöne Ecken Logo\">";
-podcast_logodata["sozio"]="<img src=\"http://shownot.es/img/logos/sozio_logo.png\" width=\"150\" height=\"150\" alt=\"Soziopod Logo\">";
-podcast_logodata["wg"]="<img src=\"http://shownot.es/img/logos/wg_logo.png\" width=\"150\" height=\"150\" alt=\"Wikigeeks Logo\">";
-podcast_logodata["wmr"]="<img src=\"http://shownot.es/img/logos/wmr_logo.png\" width=\"150\" height=\"150\" alt=\"Wir. Müssen Reden Logo\">";
-podcast_logodata["wrint"]="<img src=\"http://shownot.es/img/logos/wr_logo.png\" width=\"150\" height=\"150\" alt=\"WRINT Logo\" title=\"WRINT Logo, Verwendung mit freundlicher Genehmigung von Holger Klein, Lizenz: CC BY-NC-SA, siehe http://creativecommons.org/licenses/by-nc-sa/3.0/\">";
-podcast_logodata["ra"]="<img src=\"http://shownot.es/img/logos/ra_logo.png\" width=\"150\" height=\"150\" alt=\"WRINT Realitaetsabgleich Logo\" title=\"WRINT Realitätsabgleich Logo, Verwendung mit freundlicher Genehmigung von Holger Klein, Lizenz: CC BY-NC-SA, siehe http://creativecommons.org/licenses/by-nc-sa/3.0/\">";
-podcast_logodata["wrintheit"]="<img src=\"http://shownot.es/img/logos/wrint_logo.png\" width=\"150\" height=\"150\" alt=\"WRINT Wrintheit Logo\" title=\"WRINT Wrintheit Logo, Verwendung mit freundlicher Genehmigung von Holger Klein, Lizenz: CC BY-NC-SA, siehe http://creativecommons.org/licenses/by-nc-sa/3.0/\">";
-podcast_logodata["flaschen"]="<img src=\"http://shownot.es/img/logos/fl_logo.png\" width=\"150\" height=\"150\" alt=\"WRINT Flaschen Logo\" title=\"WRINT Flaschen Logo, Verwendung mit freundlicher Genehmigung von Holger Klein, Lizenz: CC BY-NC-SA, siehe http://creativecommons.org/licenses/by-nc-sa/3.0/\">";
+function poor_unescape {
+  sed "s/\\\\\"/\"/g; s/\\\\\\\\/\\\\/g;" <<< "$1";
+}
 
 
-declare -A podcast_urldata;
-podcast_urldata["abs"]="http://absradio.de/";
-podcast_urldata["bm"]="http://www.fritz.de/media/podcasts/sendungen/blue_moon.html";
-podcast_urldata["bmll"]="CONCAT:bm,ll";
-podcast_urldata["ll"]="http://www.lateline.de/";
-podcast_urldata["cr"]="http://chaosradio.ccc.de/";
-podcast_urldata["cre"]="http://cre.fm/";
-podcast_urldata["culinaricast"]="http://culinaricast.de/";
-podcast_urldata["dss"]="http://die-sondersendung.de/";
-podcast_urldata["ep"]="http://einschlafen-podcast.de/";
-podcast_urldata["fan"]="http://fanboys.fm/";
-podcast_urldata["hoaxilla"]="http://www.hoaxilla.com/";
-podcast_urldata["jc"]="http://www.jobscast.de/";
-podcast_urldata["lecast"]="http://bullosamedia.de/";
-podcast_urldata["lk"]="http://1337kultur.de/";
-podcast_urldata["mm"]="http://freakshow.fm/";
-podcast_urldata["ng"]="http://www.netzgespräche.de/";
-podcast_urldata["nsfw"]="http://not-safe-for-work.de/";
-podcast_urldata["osm"]="http://blog.openstreetmap.de/radio-osm/";
-podcast_urldata["pp"]="http://www.pubkameraden.de/";
-podcast_urldata["psyt"]="http://www.psycho-talk.de/";
-podcast_urldata["qs"]="http://die-quasselstrippen.de/";
-podcast_urldata["ra"]="http://www.wrint.de/category/realitaetsabgleich";
-podcast_urldata["rl"]="http://www.robotiklabor.de/";
-podcast_urldata["sbk"]="http://www.staatsbuergerkunde-podcast.de/";
-podcast_urldata["se"]="http://schoene-ecken.de/";
-podcast_urldata["sozio"]="http://soziopod.de/";
-podcast_urldata["wg"]="http://wikigeeks.de/";
-podcast_urldata["wmr"]="http://wir.muessenreden.de/";
-podcast_urldata["wrint"]="http://www.wrint.de/";
-podcast_urldata["wrintheit"]="http://www.wrint.de/category/wrintheit";
-podcast_urldata["flaschen"]="http://www.wrint.de/category/flaschen";
 
-declare -A podcast_namedata;
-podcast_namedata["abs"]="ABSradio";
-podcast_namedata["bm"]="Blue Moon";
-podcast_namedata["bmll"]="CONCAT:bm,ll";
-podcast_namedata["ll"]="LateLine";
-podcast_namedata["cr"]="Chaosradio";
-podcast_namedata["cre"]="CRE";
-podcast_namedata["culinaricast"]="Culinaricast";
-podcast_namedata["dss"]="Die Sondersendung";
-podcast_namedata["ep"]="Einschlafen Podcast";
-podcast_namedata["fan"]="Fanb0ys";
-podcast_namedata["hoaxilla"]="Hoaxilla";
-podcast_namedata["jc"]="Jobscast";
-podcast_namedata["lecast"]="LeCast";
-podcast_namedata["lk"]="1337@kultur:~\$";
-podcast_namedata["mm"]="Freak Show";
-podcast_namedata["ng"]="Netzgespr&auml;che";
-podcast_namedata["nsfw"]="Not Safe For Work";
-podcast_namedata["osm"]="Radio OSM";
-podcast_namedata["pp"]="Pubkameraden";
-podcast_namedata["psyt"]="Psychotalk";
-podcast_namedata["qs"]="Quasselstrippen";
-podcast_namedata["ra"]="WRINT";
-podcast_namedata["rl"]="Robotiklabor";
-podcast_namedata["sbk"]="Staatsb&uuml;rgerkunde";
-podcast_namedata["se"]="Schöne Ecken";
-podcast_namedata["sozio"]="Soziopod";
-podcast_namedata["wg"]="Wikigeeks";
-podcast_namedata["wmr"]="Wir. M&uuml;ssen Reden";
-podcast_namedata["wrint"]="WRINT";
-podcast_namedata["wrintheit"]="WRINT";
-podcast_namedata["flaschen"]="WRINT";
+
+
+declare -A poddata;
+function init_poddata {
+    poddata["name"]="Undeclared";
+    poddata["slug"]="undeclared";
+    poddata["long_name"]="Not declared";
+    poddata["url"]="http://example.org/";
+    poddata["logo"]="";
+}
+init_poddata;
+
+function lookup_poddata {
+    given_pod_name="$1";
+    while read -r cur_line; do
+        cur_name="$(sed -r "s/^([^:]+):.*/\\1/;" <<< "${cur_line}")";
+    
+        if test "${given_pod_name}" = "${cur_name}"; then
+            cur_abbrev="$(sed -r "s/^[^:]+:([^,]+),.*/\\1/;" <<< "${cur_line}")";
+        
+            cur_long_name="$(sed -r "s/^[^:]+:[^,]+,\"(([^\"\\\\]+|\\\\\"|\\\\\\\\)*)\".*/\\1/;" <<< "${cur_line}")";
+            parsed_char_count=$((${#cur_name} + ${#cur_abbrev} + ${#cur_long_name} + 4));
+            cur_url="$(sed -r "s/^.{${parsed_char_count}},\"(([^\"\\\\]+|\\\\\"|\\\\\\\\)*)\".*/\\1/;" <<< "${cur_line}")";
+            parsed_char_count=$((${parsed_char_count} + ${#cur_url} + 3));
+            cur_logo="$(sed -r "s/^.{${parsed_char_count}},\"(([^\"\\\\]+|\\\\\"|\\\\\\\\)*)\".*/\\1/;" <<< "${cur_line}")";
+        
+            cur_long_name="$(poor_unescape "${cur_long_name}")";
+            cur_url="$(poor_unescape "${cur_url}")";
+            cur_logo="$(poor_unescape "${cur_logo}")";
+        
+            poddata["name"]="${cur_name}";
+            poddata["slug"]="${cur_abbrev}";
+            poddata["long_name"]="${cur_long_name}";
+            poddata["url"]="${cur_url}";
+            poddata["logo"]="${cur_logo}";
+        fi;
+    done < "pod-data.txt";
+}
 
 
 #check if a header exists, if we don't find a properly denoted header
@@ -396,11 +306,20 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     tmp_name="$(echo "$podcast_name" | tr "[:upper:]" "[:lower:]")";
     podcast_slug="${podcast_slugdata["$tmp_name"]}";
 
+    given_pod_name="${tmp_name}";
+
     #TODO make this nicer
     if $(echo "$podcast_name" | grep -qi "wrintheit"); then
 	podcast_name="wrint";
 	podcast_slug="wrint";
+        given_pod_name="wrint";
     fi;
+
+    lookup_poddata "${given_pod_name}";
+
+
+
+
 
 
 
@@ -461,16 +380,16 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     #special treatment for Blue Moon
     #  - it might be a Blue Moon/Lateline combination,
     #    or a falsely labeled Lateline
-    if test "$podcast_slug" = "bm"; then
+    if test "${poddata["slug"]}" = "bm"; then
 	day_of_week=$(date --date="@$broadcast_timestamp" +%w);
 	#lateline is only aired from monday to thursday
 	if test $day_of_week -gt 0 && test $day_of_week -lt 5; then
 	    if $(echo "$podcaster" | grep -qi "holgi\\|Holger Klein\\|Böhmermann\\|Caroline Korneli") || $(echo "$podcaster" | grep $'^[ \t]*$'); then 
 		#check wether it might be Lateline without Blue Moon
 		if test $(date --date="@$broadcast_timestamp" +%H) -eq 23; then
-		    podcast_slug="ll";
+		    lookup_poddata "ll";
 		else
-		    podcast_slug="bmll";
+		    lookup_poddata "bmll";
 		fi;
 	    fi;
 	fi;
@@ -485,7 +404,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 
     #getting the archive data correct mandates a heavy bunch of code,
     #  it's far from being beautifull
-    if test "$podcast_slug" = "bm" || test "$podcast_slug" = "ll" || test "$podcast_slug" = "bmll"; then
+    if test "${poddata["slug"]}" = "bm" || test "${poddata["slug"]}" = "ll" || test "${poddata["slug"]}" = "bmll"; then
 	archive_path+="bm";
 	archive_highest_number=0;
 	built_date="$(echo "$broadcast_day" | sed "s/^\\([0-9]\\)$/0\\1/")";
@@ -515,11 +434,11 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	    archive_filename="$archive_number.$built_date.html";
 	fi;
 
-	if test "$podcast_slug" = "bm"; then
+	if test "${poddata["slug"]}" = "bm"; then
 	    sendungstitel="Blue Moon ";
-	elif test "$podcast_slug" = "ll"; then
+	elif test "${poddata["slug"]}" = "ll"; then
 	    sendungstitel="LateLine ";
-	elif test "$podcast_slug" = "bmll"; then
+	elif test "${poddata["slug"]}" = "bmll"; then
 	    sendungstitel="Blue Moon/LateLine ";
 	fi;
 	sendungstitel+="$(echo "$built_date" | sed "s/_/./g")";
@@ -528,62 +447,62 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 
 	archivable="yes";
     #podcasts always using three-digit-numbering
-    elif test "$podcast_slug" = "abs" || \
-         test "$podcast_slug" = "cre" || \
-         test "$podcast_slug" = "culinaricast" || \
-         test "$podcast_slug" = "dss" || \
-         test "$podcast_slug" = "jc" || \
-         test "$podcast_slug" = "lecast" || \
-         test "$podcast_slug" = "mm" || 
-         test "$podcast_slug" = "ng" || \
-         test "$podcast_slug" = "osm" || \
-         test "$podcast_slug" = "qs" || \
-         test "$podcast_slug" = "rl" || \
-         test "$podcast_slug" = "sbk" || \
-         test "$podcast_slug" = "wg" || \
-         test "$podcast_slug" = "wmr"; then
-	archive_path+="$podcast_slug";
+    elif test "${poddata["slug"]}" = "abs" || \
+         test "${poddata["slug"]}" = "cre" || \
+         test "${poddata["slug"]}" = "culinaricast" || \
+         test "${poddata["slug"]}" = "dss" || \
+         test "${poddata["slug"]}" = "jc" || \
+         test "${poddata["slug"]}" = "lecast" || \
+         test "${poddata["slug"]}" = "mm" || 
+         test "${poddata["slug"]}" = "ng" || \
+         test "${poddata["slug"]}" = "osm" || \
+         test "${poddata["slug"]}" = "qs" || \
+         test "${poddata["slug"]}" = "rl" || \
+         test "${poddata["slug"]}" = "sbk" || \
+         test "${poddata["slug"]}" = "wg" || \
+         test "${poddata["slug"]}" = "wmr"; then
+	archive_path+="${poddata["slug"]}";
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
-        if test "mm" = "$podcast_slug"; then
+        if test "mm" = "${poddata["slug"]}"; then
             archive_filename="$archive_number.FS-$archive_number.html";
-        elif test "lecast" = "$podcast_slug"; then
+        elif test "lecast" = "${poddata["slug"]}"; then
             archive_filename="$archive_number.LeCast-$archive_number.html";
-        elif test "culinaricast" = "$podcast_slug"; then
-            archive_filename="$archive_number.${podcast_namedata[${podcast_slug}]}-${archive_number}.html";
-        elif test "dss" = "${podcast_slug}"; then
+        elif test "culinaricast" = "${poddata["slug"]}"; then
+            archive_filename="$archive_number.${poddata["long_name"]}-${archive_number}.html";
+        elif test "dss" = "${poddata["slug"]}"; then
             archive_filename="$archive_number.Sondersendung-${archive_number}.html";
-        elif test "wg" = "$podcast_slug"; then
-            archive_filename="${archive_number}.${podcast_namedata[${podcast_slug}]}-${episode_number}.html";
+        elif test "wg" = "${poddata["slug"]}"; then
+            archive_filename="${archive_number}.${poddata["long_name"]}-${episode_number}.html";
 	else
-            archive_filename="$archive_number.$(echo "$podcast_slug" | tr "[:lower:]" "[:upper:]")-$archive_number.html";
+            archive_filename="$archive_number.$(echo "${poddata["slug"]}" | tr "[:lower:]" "[:upper:]")-$archive_number.html";
 	fi;
         if test "osm" = "$podcast_slug"; then
             sendungstitel="OSMDE${archive_number} Radio OSM ${episode_number}";
-        elif test "culinaricast" = "$podcast_slug"; then
+        elif test "culinaricast" = "${poddata["slug"]}"; then
             sendungstitel="CC $archive_number";
-        elif test "cre" = "$podcast_slug"; then
+        elif test "cre" = "${poddata["slug"]}"; then
             sendungstitel="CRE $archive_number";
         else
-	    sendungstitel="${podcast_namedata[$podcast_slug]} $archive_number";
+	    sendungstitel="${poddata["long_name"]} $archive_number";
         fi;
 	description_titel="Automatisch generiert";
 	archivable="yes";
-    elif test "$podcast_slug" = "cr" || \
-         test "$podcast_slug" = "sozio"; then
-	archive_path+="$podcast_slug";
+    elif test "${poddata["slug"]}" = "cr" || \
+         test "${poddata["slug"]}" = "sozio"; then
+	archive_path+="${poddata["slug"]}";
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
-        if test "$podcast_slug" = "cr"; then
+        if test "${poddata["slug"]}" = "cr"; then
             archive_filename="$archive_number.Chaosradio-$archive_number.html";
-            sendungstitel="${podcast_namedata[$podcast_slug]} $archive_number";
-        elif test "$podcast_slug" = "sozio"; then
+            sendungstitel="${poddata["long_name"]} $archive_number";
+        elif test "${poddata["slug"]}" = "sozio"; then
             archive_filename="$archive_number.Soziopod-$archive_number.html";
-            sendungstitel="${podcast_namedata[$podcast_slug]} #$archive_number";
+            sendungstitel="${poddata["long_name"]} #$archive_number";
         fi;
 	description_titel="Automatisch generiert";
 	archivable="yes";
-    elif test "$podcast_slug" = "lk"; then
+    elif test "${poddata["slug"]}" = "lk"; then
 	archive_path+="lk";
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
@@ -591,50 +510,50 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	sendungstitel="Folge $episode_number";
 	description_titel="Automatisch generiert";
 	archivable="yes";
-    elif test "$podcast_slug" = "psyt"; then
-	archive_path+="$podcast_slug";
+    elif test "${poddata["slug"]}" = "psyt"; then
+	archive_path+="${poddata["slug"]}";
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
         if test -z "$episodetitle"; then
-	    sendungstitel="$(tr "[:lower:]" "[:upper:]" <<< "$podcast_slug")${archive_number}";
+	    sendungstitel="$(tr "[:lower:]" "[:upper:]" <<< "${poddata["slug"]}")${archive_number}";
 	else
 	    sendungstitel="$(head --bytes=1 <<< "$episodetitle" | tr "[:lower:]" "[:lower:]")$(tail --bytes=+2 <<< "$episodetitle")";
         fi;
 	archive_filename="$archive_number.$sendungstitel.html";
 	description_titel="Automatisch generiert";
 	archivable="yes";
-    elif test "$podcast_slug" = "nsfw" || \
-         test "$podcast_slug" = "ep" || \
-         test "$podcast_slug" = "pp" || \
-         test "$podcast_slug" = "se"; then
-	archive_path+="$podcast_slug";
+    elif test "${poddata["slug"]}" = "nsfw" || \
+         test "${poddata["slug"]}" = "ep" || \
+         test "${poddata["slug"]}" = "pp" || \
+         test "${poddata["slug"]}" = "se"; then
+	archive_path+="${poddata["slug"]}";
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
-	archive_filename="$archive_number.$(echo "$podcast_slug" | tr "[:lower:]" "[:upper:]")-$episode_number.html";
-        if test "$podcast_slug" = "se"; then
-            sendungstitel="$(echo "$podcast_slug" | tr "[:lower:]" "[:upper:]") $episode_number";
+	archive_filename="$archive_number.$(echo "${poddata["slug"]}" | tr "[:lower:]" "[:upper:]")-$episode_number.html";
+        if test "${poddata["slug"]}" = "se"; then
+            sendungstitel="$(echo "${poddata["slug"]}" | tr "[:lower:]" "[:upper:]") $episode_number";
         else
-            sendungstitel="${podcast_namedata[$podcast_slug]} $episode_number";
+            sendungstitel="${poddata["long_name"]} $episode_number";
         fi;
 	description_titel="Automatisch generiert";
 	archivable="yes";
-    elif test "$podcast_slug" = "hoaxilla" || \
-         test "$podcast_slug" = "fan"; then
-	archive_path+="$podcast_slug";
+    elif test "${poddata["slug"]}" = "hoaxilla" || \
+         test "${poddata["slug"]}" = "fan"; then
+	archive_path+="${poddata["slug"]}";
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
-        if test "$podcast_slug" = "hoaxilla"; then
-            archive_filename="$archive_number.$(echo "$podcast_slug" | head --bytes=1 | tr "[:lower:]" "[:upper:]")$(echo "$podcast_slug" | sed "s/^.//")-$episode_number.html";
-            sendungstitel="${podcast_namedata[$podcast_slug]} #$episode_number";
-        elif test "$podcast_slug" = "fan"; then
-            archive_filename="$archive_number.$(echo "$podcast_slug" | tr "[:lower:]" "[:upper:]")${archive_number}.html";
+        if test "${poddata["slug"]}" = "hoaxilla"; then
+            archive_filename="$archive_number.$(echo "${poddata["slug"]}" | head --bytes=1 | tr "[:lower:]" "[:upper:]")$(echo "${poddata["slug"]}" | sed "s/^.//")-$episode_number.html";
+            sendungstitel="${poddata["long_name"]} #$episode_number";
+        elif test "${poddata["slug"]}" = "fan"; then
+            archive_filename="$archive_number.$(echo "${poddata["slug"]}" | tr "[:lower:]" "[:upper:]")${archive_number}.html";
             sendungstitel="Episode #$episode_number";
         fi;
 
 	description_titel="Automatisch generiert";
 	archivable="yes";
 
-    elif test "$podcast_slug" = "wrint"; then
+    elif test "${poddata["slug"]}" = "wrint"; then
 	archive_path+="wrint";
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
@@ -662,7 +581,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	    fi;
 	done;
 	#try to determine whether it's a wrintheit or a realitaetsabgleich
-	if test "$podcast_slug" = "wrint"; then
+	if test "${poddata["slug"]}" = "wrint"; then
 	    day_of_week=$(date --date="@$broadcast_timestamp" +%w);
 	    # if it's wednesday or friday odds are very likely it's a Realitaetsabgleich
 	    if test $day_of_week -eq 3 || test $day_of_week -eq 5; then
@@ -675,7 +594,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
                     #  if he isn't mentioned, then it's probably not a
                     #    realitaetsabgleich
                     if ! (grep -q "[^ ]" <<< "$podcaster") || grep -qi "toby" <<< "$podcaster"; then
-			podcast_slug="ra";
+                        lookup_poddata "ra";
 			if test "$found_archive_file" = "no"; then
 			    sendungstitel="Realitaetsabgleich";
 			    description_titel="Automatisch generiert";
@@ -691,7 +610,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
                 #  if she isn't mentioned, then it's probably not a
                 #    wrintheit
                 if ! (grep -q "[^ ]" <<< "$podcaster") || grep -qi "alexandra\\|tobor\\|silenttiffy" <<< "$podcaster"; then
-                    podcast_slug="wrintheit";
+                    lookup_poddata "wrintheit";
 		    if test "$found_archive_file" = "no"; then
 		        sendungstitel="Wrintheit";
 		        description_titel="Automatisch generiert";
@@ -700,21 +619,21 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	    fi;
             #check again for the name of specific podcasters
 	    if $(echo "$podcaster" | grep -qi "tobor\\|silenttify"); then
-		podcast_slug="wrintheit";
+		lookup_poddata ="wrintheit";
 		if test "$found_archive_file" = "no"; then
 		    sendungstitel="Wrintheit $episode_number";
 		    description_titel="Automatisch generiert";
 		fi;
 	    fi;
 	    if $(echo "$podcaster" | grep -qi "christoph\\|raffelt\\|overkorkt"); then
-		podcast_slug="flaschen";
+		lookup_poddata "flaschen";
 		if test "$found_archive_file" = "no"; then
 		    sendungstitel="Wrint Flaschen";
 		    description_titel="Automatisch generiert";
 		fi;
 	    fi;
 	    if $(echo "$podcaster" | grep -qi "toby"); then
-		podcast_slug="ra";
+		lookup_poddata "ra";
 		if test "$found_archive_file" = "no"; then
 		    sendungstitel="Realitaetsabgleich";
 		    description_titel="Automatisch generiert";
@@ -722,19 +641,19 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	    fi;
 	fi;
 	#very specific code to figure out the specific count of a new wrintheit or realitaetsabgleich episode
-	if (test "$podcast_slug" = "ra" || test "$podcast_slug" = "wrintheit") && test "$found_archive_file" = "no"; then
+	if (test "${poddata["slug"]}" = "ra" || test "${poddata["slug"]}" = "wrintheit") && test "$found_archive_file" = "no"; then
 	    wrint_number=0;
 	    wrint_wrint=0;
 	    wrint_name="";
 	    wrint_first_regex="";
 	    wrint_second_regex="";
 	    wrint_third_regex="";
-	    if test "$podcast_slug" = "ra"; then
+	    if test "${poddata["slug"]}" = "ra"; then
 		wrint_name="Realitaetsabgleich";
 		wrint_first_regex="^[0-9]\\+\\.Realit\\(ae\\|ä\\)tsabgleich-[0-9]\\+\\.html$";
 		wrint_second_regex="s/^[0-9]\\+\\..\\{18,19\\}-\\([0-9]\\+\\)\\.[Hh][Tt][Mm][Ll]/\\1/";
 		wrint_third_regex="^[0-9]\\+\\.\\(.*realit\\(ae\\|ä\\)tsabgleich.*\\)\\.html$";
-	    elif test "$podcast_slug" = "wrintheit"; then
+	    elif test "${poddata["slug"]}" = "wrintheit"; then
 		wrint_name="Wrintheit";
 		wrint_first_regex="^[0-9]\\+\\.Wrintheit-[0-9]\\+\\.html$";
 		wrint_second_regex="s/^[0-9]\\+\\..\\{9\\}-\\([0-9]\\+\\)\\.[Hh][Tt][Mm][Ll]/\\1/";
@@ -788,17 +707,17 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 
     #cre,nsfw and rl have guessable $sendungsseite
     if $(echo "$sendungsseite" | grep -q "^ *$"); then
-        if test "$podcast_slug" = "cre"; then
+        if test "${poddata["slug"]}" = "cre"; then
             sendungsseite="http://cre.fm/cre${archive_number}/";
-        elif test "$podcast_slug" = "nsfw"; then
+        elif test "${poddata["slug"]}" = "nsfw"; then
             sendungsseite="http://not-safe-for-work.de/nsfw${archive_number}/";
-        elif test "$podcast_slug" = "rl"; then
+        elif test "${poddata["slug"]}" = "rl"; then
             sendungsseite="http://www.robotiklabor.de/rl${archive_number}/";
-        elif test "${podcast_slug}" = "wg"; then
+        elif test "${poddata["slug"]}" = "wg"; then
             sendungsseite="http://wikigeeks.de/wg${archive_number}";
-        elif test "${podcast_slug}" = "cr"; then
+        elif test "${poddata["slug"]}" = "cr"; then
             sendungsseite="http://chaosradio.ccc.de/cr${episode_number}.html";
-        elif test "${podcast_slug}" = "mm"; then
+        elif test "${poddata["slug"]}" = "mm"; then
             sendungsseite="http://freakshow.fm";
             if test 115 -ge ${episode_number}; then
                 sendungsseite+="/fs${archive_number}";
@@ -814,7 +733,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
         description_titel="Entnommen aus dem Feld \"episodetitle\" im Pad";
     else
        #try to fetch $sendungsseite and use it's title to determine $sendungstitel
-	if test "$podcast_slug" != "ra" && test "$podcast_slug" != "wrintheit" && $(echo "$sendungsseite" | grep -qi "https\\?://"); then
+	if test "${poddata["slug"]}" != "ra" && test "${poddata["slug"]}" != "wrintheit" && $(echo "$sendungsseite" | grep -qi "https\\?://"); then
 	    sendungstitel="$(wget -O - "$sendungsseite" 2>/dev/null | grep -o "<title[^>]*>.*</title>" | head -n 1 | sed "s/<title[^>]*>\\(\\.*\\)/\\1/; s/<\\/title>.*//")";
             description_titel="Extrahiert aus dem title-Element der Seite fuer die spezifische Episode";
             #check if the double->-character (&#187;) was used to separate episode title form the title of the content-management-system
@@ -833,7 +752,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 		if test $(echo "$sendungstitel" | grep -o " - " | grep -c " - ") -gt 1; then
                     #in case the title contains the podcast's slug or the episode's number,
                     #  at the beginning, it will be stripped
-		    if $(echo "$sendungstitel" | grep -qi "^ *\\($podcast_slug[-_ ]\\?\\)\\? *\\(0*$archive_number\\|$episode_number\\)[-_ ]*"); then
+		    if $(echo "$sendungstitel" | grep -qi "^ *\\(${poddata["slug"]}[-_ ]\\?\\)\\? *\\(0*$archive_number\\|$episode_number\\)[-_ ]*"); then
 			sendungstitel="$(echo "$sendungstitel" | sed "s/^\\([^-]*-[^-]*\\)-.*$/\\1/; s/[-_ ]$//")";
 
 		    else
@@ -857,12 +776,12 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     #now we are generating the header's HTML
     echo $'<div class="info">\n  <div class="thispodcast">\n    <div class="podcastimg">' | tee -a "$shownotes_header_tmp";
     echo -n $'      ' | tee -a "$shownotes_header_tmp";
-    echo "${podcast_logodata[${podcast_slug}]}" | tee -a "$shownotes_header_tmp";
+    echo "${poddata["logo"]}" | tee -a "$shownotes_header_tmp";
     echo $'    </div>\n<?php\n' | tee -a "$shownotes_header_tmp";
     echo $'include "./../episodeselector.php";\ninsertselector();\n\n?>\n  </div>' | tee -a "$shownotes_header_tmp";
     echo $'  <div class="episodeinfo">\n    <table>\n      <tr>' | tee -a "$shownotes_header_tmp";
     echo -n $'        <td>Podcast' | tee -a "$shownotes_header_tmp";
-    if grep -qi "^CONCAT:" <<< "${podcast_urldata[${podcast_slug}]}" || grep -qi "^CONCAT:" <<< "${podcast_namedata[${podcast_slug}]}"; then
+    if grep -qi "^CONCAT:" <<< "${poddata["url"]}" || grep -qi "^CONCAT:" <<< "${poddata["long_name"]}"; then
 	echo -n $'s</td>\n        <td>\n' | tee -a "$shownotes_header_tmp";
 	
 	declare -a podcast_line_arr_name;
@@ -871,38 +790,41 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	podcast_line_count_url=0;
 	saved_ifs="$IFS";
 	IFS=",";
-	if $(echo "${podcast_namedata[$podcast_slug]}" | grep -qi "^concat:"); then
-	    for cur_slug in $(echo "${podcast_namedata[$podcast_slug]}" | tr "[A-Z]" "[a-z]"| sed "s/^concat://"); do
+	if $(echo "${poddata["long_name"]}" | grep -qi "^concat:"); then
+	    for cur_slug in $(echo "${poddata["long_name"]}" | tr "[A-Z]" "[a-z]"| sed "s/^concat://"); do
 		podcast_line_arr_name[$podcast_line_count_name]="$cur_slug";
 		let podcast_line_count_name++;
 	    done;
 	else
-		podcast_line_arr_name[0]="${podcast_namedata[$podcast_slug]}";
+		podcast_line_arr_name[0]="${poddata["long_name"]}";
 		podcast_line_count_name=1;
 	fi;
-	if $(echo "${podcast_urldata[$podcast_slug]}" | grep -qi "^concat:"); then
-	    for cur_slug in $(echo "${podcast_urldata[$podcast_slug]}" | tr "[A-Z]" "[a-z]"| sed "s/^concat://"); do
+	if $(echo "${poddata["url"]}" | grep -qi "^concat:"); then
+	    for cur_slug in $(echo "${poddata["url"]}" | tr "[A-Z]" "[a-z]"| sed "s/^concat://"); do
 		podcast_line_arr_url[$podcast_line_count_url]="$cur_slug";
 		let podcast_line_count_url++;
 	    done;
 	else
-		podcast_line_arr_url[0]="${podcast_urldata[$podcast_slug]}";
+		podcast_line_arr_url[0]="${poddata["url"]}";
 		podcast_line_count_url=1;
 	fi;
 	IFS="$saved_ifs";
 
 	i=0;
 	is_first_podcast="yes";
+        orig_pod_name="${poddata["name"]}"
 	while test $i -lt $podcast_line_count_name || test $i -lt $podcast_line_count_url; do
 	    indexname="";
 	    indexurl="";
 	    if test $i -lt $podcast_line_count_name; then
 		cur_slug="${podcast_line_arr_name[$i]}";
-		indexname="${podcast_namedata[$cur_slug]}";
+                lookup_poddata "${cur_slug}";
+		indexname="${poddata["long_name"]}";
 	    fi;
 	    if test $i -lt $podcast_line_count_url; then
 		cur_slug="${podcast_line_arr_url[$i]}";
-		indexurl="${podcast_urldata[$cur_slug]}";
+                lookup_poddata "${cur_slug}";
+		indexurl="${poddata["url"]}";
 	    fi;
 
 	    if test "" != "$indexname" || test "" != "$indexurl"; then
@@ -927,15 +849,16 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	    echo "" | tee -a "$shownotes_header_tmp";
 	fi;
 	echo "        </td>" | tee -a "$shownotes_header_tmp";
+        lookup_poddata "${orig_pod_name}";
     else
 	echo -n $'</td><td><a href="' | tee -a "$shownotes_header_tmp";
         if test -n "$webseite"; then
             echo -n "$webseite" | tee -a "$shownotes_header_tmp";
         else
-            echo -n "${podcast_urldata[${podcast_slug}]}" | tee -a "$shownotes_header_tmp";
+            echo -n "${poddata["url"]}" | tee -a "$shownotes_header_tmp";
         fi;
 	echo -n $'">' | tee -a "$shownotes_header_tmp";
-	echo -n "${podcast_namedata[${podcast_slug}]}" | tee -a "$shownotes_header_tmp";
+	echo -n "${poddata["long_name"]}" | tee -a "$shownotes_header_tmp";
 	echo  "</a></td>" | tee -a "$shownotes_header_tmp";
     fi;
 
