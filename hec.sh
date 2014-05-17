@@ -236,33 +236,57 @@ function init_poddata {
     poddata["slug"]="undeclared";
     poddata["long_name"]="Not declared";
     poddata["url"]="http://example.org/";
+    poddata["fname_mask"]="%archive_number%.%name%-%episode_number%.html"
+    poddata["title_mask"]="%long_name% %episode_number%";
     poddata["logo"]="";
+
 }
 init_poddata;
 
 function lookup_poddata {
     given_pod_name="$1";
     while read -r cur_line; do
-        cur_name="$(sed -r "s/^([^:]+):.*/\\1/;" <<< "${cur_line}")";
-    
-        if test "${given_pod_name}" = "${cur_name}"; then
-            cur_abbrev="$(sed -r "s/^[^:]+:([^,]+),.*/\\1/;" <<< "${cur_line}")";
+        if grep -q "^#" <<< "${cur_line}"; then
+            continue;
+        else
+            cur_name="$(sed -r "s/^([^:]+):.*/\\1/;" <<< "${cur_line}")";
         
-            cur_long_name="$(sed -r "s/^[^:]+:[^,]+,\"(([^\"\\\\]+|\\\\\"|\\\\\\\\)*)\".*/\\1/;" <<< "${cur_line}")";
-            parsed_char_count=$((${#cur_name} + ${#cur_abbrev} + ${#cur_long_name} + 4));
-            cur_url="$(sed -r "s/^.{${parsed_char_count}},\"(([^\"\\\\]+|\\\\\"|\\\\\\\\)*)\".*/\\1/;" <<< "${cur_line}")";
-            parsed_char_count=$((${parsed_char_count} + ${#cur_url} + 3));
-            cur_logo="$(sed -r "s/^.{${parsed_char_count}},\"(([^\"\\\\]+|\\\\\"|\\\\\\\\)*)\".*/\\1/;" <<< "${cur_line}")";
-        
-            cur_long_name="$(poor_unescape "${cur_long_name}")";
-            cur_url="$(poor_unescape "${cur_url}")";
-            cur_logo="$(poor_unescape "${cur_logo}")";
-        
-            poddata["name"]="${cur_name}";
-            poddata["slug"]="${cur_abbrev}";
-            poddata["long_name"]="${cur_long_name}";
-            poddata["url"]="${cur_url}";
-            poddata["logo"]="${cur_logo}";
+            if test "${given_pod_name}" = "${cur_name}"; then
+                cur_abbrev="$(sed -r "s/^[^:]+:([^,]+),.*/\\1/;" <<< "${cur_line}")";
+                parsed_char_count=$((${#cur_name} + ${#cur_abbrev} + 1));
+
+                poddata["name"]="${cur_name}";
+                poddata["slug"]="${cur_abbrev}";
+
+                i=0;
+                cur_value="";
+                while test 5 -gt $i; do
+                    cur_value="$(sed -r "s/^.{${parsed_char_count}},\"(([^\"\\\\]+|\\\\\"|\\\\\\\\)*)\".*/\\1/;" <<< "${cur_line}")";
+                    parsed_char_count=$((${parsed_char_count} + ${#cur_value} + 3));
+
+                    cur_value="$(poor_unescape "${cur_value}")";
+
+                    case $i in
+                        0)
+                            poddata["long_name"]="${cur_value}";
+                            ;;
+                        1)
+                            poddata["url"]="${cur_value}";
+                            ;;
+                        2)
+                            poddata["title_mask"]="${cur_value}";
+                            ;;
+                        3)
+                            poddata["fname_mask"]="${cur_value}";
+                            ;;
+                        4)
+                            poddata["logo"]="${cur_value}";
+                            ;;
+                    esac;
+
+                    let i++;
+                done;
+            fi;
         fi;
     done < "pod-data.txt";
 }
@@ -446,6 +470,19 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 
 
 	archivable="yes";
+
+
+
+# TODO: Automaticly set these cases with a string containing variables of the form %slug%
+#    variables:
+#        %archive_number%
+#        %episode_number%
+#        %name%
+#        %slug%
+#        %slug_uppercase%
+#        %long_name%
+
+
     #podcasts always using three-digit-numbering
     elif test "${poddata["slug"]}" = "abs" || \
          test "${poddata["slug"]}" = "cre" || \
@@ -510,6 +547,8 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	sendungstitel="Folge $episode_number";
 	description_titel="Automatisch generiert";
 	archivable="yes";
+
+# Resolve "psyt" in pod-data.txt later on
     elif test "${poddata["slug"]}" = "psyt"; then
 	archive_path+="${poddata["slug"]}";
 	archive_number=$episode_number;
@@ -522,6 +561,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	archive_filename="$archive_number.$sendungstitel.html";
 	description_titel="Automatisch generiert";
 	archivable="yes";
+
     elif test "${poddata["slug"]}" = "nsfw" || \
          test "${poddata["slug"]}" = "ep" || \
          test "${poddata["slug"]}" = "pp" || \
