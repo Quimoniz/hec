@@ -288,7 +288,7 @@ function lookup_poddata {
                 done;
             fi;
         fi;
-    done < "pod-data.txt";
+    done < "${hec_path}/pod-data.txt";
 }
 
 
@@ -328,7 +328,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     chatlog_url="$(echo "${chatlog_url}" | sed "s/^<//; s/>$//")";
 
     tmp_name="$(echo "$podcast_name" | tr "[:upper:]" "[:lower:]")";
-    podcast_slug="${podcast_slugdata["$tmp_name"]}";
+#    podcast_slug="${podcast_slugdata["$tmp_name"]}";
 
     given_pod_name="${tmp_name}";
 
@@ -426,6 +426,65 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     #only used for wrint/ra/wrintheit
     chaptermarks_file="";
 
+
+#assemmble title, filename
+#        %archive_number%
+#        %episode_number%
+#        %name%
+#        %slug%
+#        %slug_uppercase%
+#        %long_name%
+
+    archive_path+="${poddata["slug"]}";
+    archive_number=$episode_number;
+    archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
+
+    tmp_alter_value="";
+
+    for i in {1..2}; do
+        case $i in
+            1)
+                tmp_alter_value="${poddata["title_mask"]}";
+                ;;
+            2)
+                tmp_alter_value="${poddata["fname_mask"]}";
+                ;;
+        esac;
+
+
+
+
+
+        tmp_alter_value="$(sed "s/%archive_number%/${archive_number}/g;" <<< "${tmp_alter_value}")";
+        tmp_alter_value="$(sed "s/%episode_number%/${episode_number}/g;" <<< "${tmp_alter_value}")";
+        tmp_alter_value="$(sed "s/%name%/${poddata["name"]}/g;" <<< "${tmp_alter_value}")";
+        tmp_alter_value="$(sed "s/%slug%/${poddata["slug"]}/g;" <<< "${tmp_alter_value}")";
+        tmp_alter_value="$(sed "s/%slug_uppercase%/$(tr "[:lower:]" "[:upper:]" <<< "${poddata["slug"]}")/g;" <<< "${tmp_alter_value}")";
+        tmp_alter_value="$(sed "s/%long_name%/${poddata["long_name"]}/g;" <<< "${tmp_alter_value}")";
+        tmp_alter_value="$(sed "s/%%/%/g;" <<< "${tmp_alter_value}")";
+
+        case $i in
+            1)
+                poddata["title_proper"]="${tmp_alter_value}";
+                ;;
+            2)
+                poddata["fname_proper"]="${tmp_alter_value}";
+                ;;
+        esac;
+
+    done;
+
+    archive_filename="${poddata["fname_proper"]}";
+    sendungstitel="${poddata["title_proper"]}";
+
+
+    if test "undeclared" != "${poddata["slug"]}"; then
+        description_titel="Automatisch generiert";
+        archivable="yes";
+    fi;
+
+
+
     #getting the archive data correct mandates a heavy bunch of code,
     #  it's far from being beautifull
     if test "${poddata["slug"]}" = "bm" || test "${poddata["slug"]}" = "ll" || test "${poddata["slug"]}" = "bmll"; then
@@ -473,80 +532,6 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 
 
 
-# TODO: Automaticly set these cases with a string containing variables of the form %slug%
-#    variables:
-#        %archive_number%
-#        %episode_number%
-#        %name%
-#        %slug%
-#        %slug_uppercase%
-#        %long_name%
-
-
-    #podcasts always using three-digit-numbering
-    elif test "${poddata["slug"]}" = "abs" || \
-         test "${poddata["slug"]}" = "cre" || \
-         test "${poddata["slug"]}" = "culinaricast" || \
-         test "${poddata["slug"]}" = "dss" || \
-         test "${poddata["slug"]}" = "jc" || \
-         test "${poddata["slug"]}" = "lecast" || \
-         test "${poddata["slug"]}" = "mm" || 
-         test "${poddata["slug"]}" = "ng" || \
-         test "${poddata["slug"]}" = "osm" || \
-         test "${poddata["slug"]}" = "qs" || \
-         test "${poddata["slug"]}" = "rl" || \
-         test "${poddata["slug"]}" = "sbk" || \
-         test "${poddata["slug"]}" = "wg" || \
-         test "${poddata["slug"]}" = "wmr"; then
-	archive_path+="${poddata["slug"]}";
-	archive_number=$episode_number;
-	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
-        if test "mm" = "${poddata["slug"]}"; then
-            archive_filename="$archive_number.FS-$archive_number.html";
-        elif test "lecast" = "${poddata["slug"]}"; then
-            archive_filename="$archive_number.LeCast-$archive_number.html";
-        elif test "culinaricast" = "${poddata["slug"]}"; then
-            archive_filename="$archive_number.${poddata["long_name"]}-${archive_number}.html";
-        elif test "dss" = "${poddata["slug"]}"; then
-            archive_filename="$archive_number.Sondersendung-${archive_number}.html";
-        elif test "wg" = "${poddata["slug"]}"; then
-            archive_filename="${archive_number}.${poddata["long_name"]}-${episode_number}.html";
-	else
-            archive_filename="$archive_number.$(echo "${poddata["slug"]}" | tr "[:lower:]" "[:upper:]")-$archive_number.html";
-	fi;
-        if test "osm" = "$podcast_slug"; then
-            sendungstitel="OSMDE${archive_number} Radio OSM ${episode_number}";
-        elif test "culinaricast" = "${poddata["slug"]}"; then
-            sendungstitel="CC $archive_number";
-        elif test "cre" = "${poddata["slug"]}"; then
-            sendungstitel="CRE $archive_number";
-        else
-	    sendungstitel="${poddata["long_name"]} $archive_number";
-        fi;
-	description_titel="Automatisch generiert";
-	archivable="yes";
-    elif test "${poddata["slug"]}" = "cr" || \
-         test "${poddata["slug"]}" = "sozio"; then
-	archive_path+="${poddata["slug"]}";
-	archive_number=$episode_number;
-	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
-        if test "${poddata["slug"]}" = "cr"; then
-            archive_filename="$archive_number.Chaosradio-$archive_number.html";
-            sendungstitel="${poddata["long_name"]} $archive_number";
-        elif test "${poddata["slug"]}" = "sozio"; then
-            archive_filename="$archive_number.Soziopod-$archive_number.html";
-            sendungstitel="${poddata["long_name"]} #$archive_number";
-        fi;
-	description_titel="Automatisch generiert";
-	archivable="yes";
-    elif test "${poddata["slug"]}" = "lk"; then
-	archive_path+="lk";
-	archive_number=$episode_number;
-	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
-	archive_filename="$archive_number.Folge-$episode_number.html";
-	sendungstitel="Folge $episode_number";
-	description_titel="Automatisch generiert";
-	archivable="yes";
 
 # Resolve "psyt" in pod-data.txt later on
     elif test "${poddata["slug"]}" = "psyt"; then
@@ -562,36 +547,6 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	description_titel="Automatisch generiert";
 	archivable="yes";
 
-    elif test "${poddata["slug"]}" = "nsfw" || \
-         test "${poddata["slug"]}" = "ep" || \
-         test "${poddata["slug"]}" = "pp" || \
-         test "${poddata["slug"]}" = "se"; then
-	archive_path+="${poddata["slug"]}";
-	archive_number=$episode_number;
-	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
-	archive_filename="$archive_number.$(echo "${poddata["slug"]}" | tr "[:lower:]" "[:upper:]")-$episode_number.html";
-        if test "${poddata["slug"]}" = "se"; then
-            sendungstitel="$(echo "${poddata["slug"]}" | tr "[:lower:]" "[:upper:]") $episode_number";
-        else
-            sendungstitel="${poddata["long_name"]} $episode_number";
-        fi;
-	description_titel="Automatisch generiert";
-	archivable="yes";
-    elif test "${poddata["slug"]}" = "hoaxilla" || \
-         test "${poddata["slug"]}" = "fan"; then
-	archive_path+="${poddata["slug"]}";
-	archive_number=$episode_number;
-	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
-        if test "${poddata["slug"]}" = "hoaxilla"; then
-            archive_filename="$archive_number.$(echo "${poddata["slug"]}" | head --bytes=1 | tr "[:lower:]" "[:upper:]")$(echo "${poddata["slug"]}" | sed "s/^.//")-$episode_number.html";
-            sendungstitel="${poddata["long_name"]} #$episode_number";
-        elif test "${poddata["slug"]}" = "fan"; then
-            archive_filename="$archive_number.$(echo "${poddata["slug"]}" | tr "[:lower:]" "[:upper:]")${archive_number}.html";
-            sendungstitel="Episode #$episode_number";
-        fi;
-
-	description_titel="Automatisch generiert";
-	archivable="yes";
 
     elif test "${poddata["slug"]}" = "wrint"; then
 	archive_path+="wrint";
@@ -782,6 +737,9 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	    #check if the double-<-character (&laquo;) was used to separate episode title from content-management-system title
 	    elif echo "$sendungstitel" | grep -q "&laquo;"; then
 		sendungstitel="$(echo "$sendungstitel" | sed "s/ \\?&laquo;.*//")";
+	    #check if "&mdash;" was used for separating
+	    elif echo "$sendungstitel" | grep -q "&mdash;"; then
+		sendungstitel="$(echo "$sendungstitel" | sed "s/ \\?&mdash;.*//")";
 	    #check if "|" was used for separating
 	    elif echo "$sendungstitel" | grep -q "|"; then
 		sendungstitel="$(echo "$sendungstitel" | sed "s/ \\?|.*//")";
