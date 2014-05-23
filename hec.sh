@@ -772,164 +772,167 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     shownotes_header_tmp="$(mktemp)";
 
     #now we are generating the header's HTML
-    echo $'<div class="info">\n  <div class="thispodcast">\n    <div class="podcastimg">' | tee -a "$shownotes_header_tmp";
-    echo -n $'      ' | tee -a "$shownotes_header_tmp";
-    echo "${poddata["logo"]}" | tee -a "$shownotes_header_tmp";
-    echo $'    </div>\n<?php\n' | tee -a "$shownotes_header_tmp";
-    echo $'include "./../episodeselector.php";\ninsertselector();\n\n?>\n  </div>' | tee -a "$shownotes_header_tmp";
-    echo $'  <div class="episodeinfo">\n    <table>\n      <tr>' | tee -a "$shownotes_header_tmp";
-    echo -n $'        <td>Podcast' | tee -a "$shownotes_header_tmp";
-    if grep -qi "^CONCAT:" <<< "${poddata["url"]}" || grep -qi "^CONCAT:" <<< "${poddata["long_name"]}"; then
-	echo -n $'s</td>\n        <td>\n' | tee -a "$shownotes_header_tmp";
-	
-	declare -a podcast_line_arr_name;
-	declare -a podcast_line_arr_url;
-	podcast_line_count_name=0;
-	podcast_line_count_url=0;
-	saved_ifs="$IFS";
-	IFS=",";
-	if $(echo "${poddata["long_name"]}" | grep -qi "^concat:"); then
-	    for cur_slug in $(echo "${poddata["long_name"]}" | tr "[A-Z]" "[a-z]"| sed "s/^concat://"); do
-		podcast_line_arr_name[$podcast_line_count_name]="$cur_slug";
-		let podcast_line_count_name++;
-	    done;
-	else
-		podcast_line_arr_name[0]="${poddata["long_name"]}";
-		podcast_line_count_name=1;
-	fi;
-	if $(echo "${poddata["url"]}" | grep -qi "^concat:"); then
-	    for cur_slug in $(echo "${poddata["url"]}" | tr "[A-Z]" "[a-z]"| sed "s/^concat://"); do
-		podcast_line_arr_url[$podcast_line_count_url]="$cur_slug";
-		let podcast_line_count_url++;
-	    done;
-	else
-		podcast_line_arr_url[0]="${poddata["url"]}";
-		podcast_line_count_url=1;
-	fi;
-	IFS="$saved_ifs";
-
-	i=0;
-	is_first_podcast="yes";
-        orig_pod_name="${poddata["name"]}"
-	while test $i -lt $podcast_line_count_name || test $i -lt $podcast_line_count_url; do
-	    indexname="";
-	    indexurl="";
-	    if test $i -lt $podcast_line_count_name; then
-		cur_slug="${podcast_line_arr_name[$i]}";
-                lookup_poddata "${cur_slug}";
-		indexname="${poddata["long_name"]}";
-	    fi;
-	    if test $i -lt $podcast_line_count_url; then
-		cur_slug="${podcast_line_arr_url[$i]}";
-                lookup_poddata "${cur_slug}";
-		indexurl="${poddata["url"]}";
-	    fi;
-
-	    if test "" != "$indexname" || test "" != "$indexurl"; then
-		if test "$is_first_podcast" = "yes"; then
-		    is_first_podcast="no";
-		else
-		    echo "," | tee -a "$shownotes_header_tmp";
-		fi;
-	    fi;
-
-	    if test "" != "$indexname" && test "" != "$indexurl"; then
-		echo -n "          <a href=\"$indexurl\">$indexname</a>" | tee -a "$shownotes_header_tmp";
-	    elif test "" != "$indexname" && test "" = "$indexurl"; then
-		echo -n "          $indexname" | tee -a "$shownotes_header_tmp";
-	    elif test "" = "$indexname" && test "" != "$indexurl"; then
-		indexname="$(echo "$indexurl" | sed "s/^\\([hH][tT][tT][pP][sS]:\\/\\/\\)\\?\\(www\\.//\\)\\?")";
-		echo -n "          <a href=\"$indexurl\">$indexname</a>" | tee -a "$shownotes_header_tmp";
-	    fi;
-	    let i++;
-	done;
-	if test "$is_first_podcast" = "no"; then
-	    echo "" | tee -a "$shownotes_header_tmp";
-	fi;
-	echo "        </td>" | tee -a "$shownotes_header_tmp";
-        lookup_poddata "${orig_pod_name}";
-    else
-	echo -n $'</td><td><a href="' | tee -a "$shownotes_header_tmp";
-        if test -n "$webseite"; then
-            echo -n "$webseite" | tee -a "$shownotes_header_tmp";
-        else
-            echo -n "${poddata["url"]}" | tee -a "$shownotes_header_tmp";
-        fi;
-	echo -n $'">' | tee -a "$shownotes_header_tmp";
-	echo -n "${poddata["long_name"]}" | tee -a "$shownotes_header_tmp";
-	echo  "</a></td>" | tee -a "$shownotes_header_tmp";
-    fi;
-
-
-    echo  $'      </tr>\n      <tr>' | tee -a "$shownotes_header_tmp";
-    echo -n $'        <td>Episode</td><td' | tee -a "$shownotes_header_tmp";
-    if test -n "$description_titel"; then
-	echo -n " title=\"$description_titel\"><a href=\"" | tee -a "$shownotes_header_tmp";
-    else
-	echo -n "><a href=\"" | tee -a "$shownotes_header_tmp";
-    fi;
-    if test "" = "$sendungsseite"; then
-	echo -n "#" | tee -a "$shownotes_header_tmp";
-    else
-	echo -n "$sendungsseite" | tee -a "$shownotes_header_tmp";
-    fi;
-    echo -n $'">' | tee -a "$shownotes_header_tmp";
-    echo -n "$sendungstitel" | tee -a "$shownotes_header_tmp";
-    echo $'</a></td>' | tee -a "$shownotes_header_tmp";
-    if test "$has_proper_date" = "yes"; then
-	echo $'      </tr>' | tee -a "$shownotes_header_tmp";
-	if test -n "$broadcast_timestamp"; then
-	    echo "      <tr>" | tee -a "$shownotes_header_tmp";
-            echo "        <td title=\"Beginn der Sendung bzw. des Livestreams\">Sendung vom</td>" | tee -a "$shownotes_header_tmp";
-            echo "        <td title=\"Unix-Timestamp:$broadcast_timestamp\">" | tee -a "$shownotes_header_tmp";
-	else
-	    echo "      <tr>" | tee -a "$shownotes_header_tmp";
-            echo "        <td title=\"Beginn der Sendung bzw. des Livestreams\">Sendung vom</td>" | tee -a "$shownotes_header_tmp";
-	fi;
-	echo "          $broadcast_day. ${german_months[$broadcast_month]}. $broadcast_year" | tee -a "$shownotes_header_tmp";
-	echo -n $'        </td>\n' | tee -a "$shownotes_header_tmp";
-	echo $'      </tr>\n' | tee -a "$shownotes_header_tmp";
-    fi;
-    echo $'      <tr>\n        <td title="In alphabetischer Reihenfolge">Podcaster</td>\n        <td>' | tee -a "$shownotes_header_tmp";
-    bash "${hec_path}/form-userlist.sh" cache="${url_cache_path}" "$podcaster" | sed "s/^\\(.*\\)/          \\1/" | tee -a "$shownotes_header_tmp";
-    echo '        </td>';
-    echo $'      </tr>\n      <tr>\n        <td title="In alphabetischer Reihenfolge">Shownoter</td>\n        <td>' | tee -a "$shownotes_header_tmp";
-    bash "${hec_path}/form-userlist.sh" cache="${url_cache_path}" "$shownoter" | sed "s/^\\(.*\\)/          \\1/" | tee -a "$shownotes_header_tmp";
-    echo $'	</td>\n      </tr>' | tee -a "$shownotes_header_tmp";
+    #  this "if true" just for having a block of code which can be piped as a whole
+    if true; then
+        echo $'<div class="info">\n  <div class="thispodcast">\n    <div class="podcastimg">';
+        echo -n $'      ';
+        echo "${poddata["logo"]}";
+        echo $'    </div>\n<?php\n';
+        echo $'include "./../episodeselector.php";\ninsertselector();\n\n?>\n  </div>';
+        echo $'  <div class="episodeinfo">\n    <table>\n      <tr>';
+        echo -n $'        <td>Podcast';
+        if grep -qi "^CONCAT:" <<< "${poddata["url"]}" || grep -qi "^CONCAT:" <<< "${poddata["long_name"]}"; then
+    	echo -n $'s</td>\n        <td>\n';
+    	
+    	declare -a podcast_line_arr_name;
+    	declare -a podcast_line_arr_url;
+    	podcast_line_count_name=0;
+    	podcast_line_count_url=0;
+    	saved_ifs="$IFS";
+    	IFS=",";
+    	if $(echo "${poddata["long_name"]}" | grep -qi "^concat:"); then
+    	    for cur_slug in $(echo "${poddata["long_name"]}" | tr "[A-Z]" "[a-z]"| sed "s/^concat://"); do
+    		podcast_line_arr_name[$podcast_line_count_name]="$cur_slug";
+    		let podcast_line_count_name++;
+    	    done;
+    	else
+    		podcast_line_arr_name[0]="${poddata["long_name"]}";
+    		podcast_line_count_name=1;
+    	fi;
+    	if $(echo "${poddata["url"]}" | grep -qi "^concat:"); then
+    	    for cur_slug in $(echo "${poddata["url"]}" | tr "[A-Z]" "[a-z]"| sed "s/^concat://"); do
+    		podcast_line_arr_url[$podcast_line_count_url]="$cur_slug";
+    		let podcast_line_count_url++;
+    	    done;
+    	else
+    		podcast_line_arr_url[0]="${poddata["url"]}";
+    		podcast_line_count_url=1;
+    	fi;
+    	IFS="$saved_ifs";
     
-    if test "FALSE" = "${chatlog_deprecated}"; then
-        if test -n "${chatlog_url}"; then
-	    echo $'      <tr>' | tee -a "$shownotes_header_tmp";
-	    host_of_chatlog="$(echo "${chatlog_url}" | sed "s/^[a-zA-Z0-9]\\+:\\/\\{0,2\\}//; s/\\(\\.[-_%a-zA-Z0-9]\\+\\)\\(:[0-9]\\+\\)\\?\\(\\/[^/#]*\\)*\\(#.*\\)\\?$/\\1/")";
-	    if $(echo "$host_of_chatlog" | grep -q "^#"); then
-		host_of_chatlog="";
-	    else
-		host_of_chatlog="$(echo "$host_of_chatlog" | sed "s/\\.\\([Cc][Oo][Mm]\\|[Dd][Ee]\\|[Tt][Kk]\\|[Oo][Rr][Gg]\\)$//")";
-	    fi;
-	    echo $'        <td title="Bei Verletzung der eigenen Privatsphäre bitte uns kontaktieren, wir werden uns dann darum bemühen denjenigen rauszufiltern">Chatlog</td>' | tee -a "$shownotes_header_tmp";
-	    echo -n $'        <td>\n          <a href="' | tee -a "$shownotes_header_tmp";
-	    echo "${chatlog_url}" | tee -a "$shownotes_header_tmp";
-	    echo -n '">' | tee -a "$shownotes_header_tmp";
-	    if test -n "$host_of_chatlog"; then
-    		echo -n "&lt;$host_of_chatlog&gt;" | tee -a "$shownotes_header_tmp";
-    	    elif test -n "${chatlog_url}"; then
-    		echo -n "&lt;${chatlog_url}&gt;" | tee -a "$shownotes_header_tmp";
-    	    else
-    		echo -n "keines" | tee -a "$shownotes_header_tmp";
+    	i=0;
+    	is_first_podcast="yes";
+            orig_pod_name="${poddata["name"]}"
+    	while test $i -lt $podcast_line_count_name || test $i -lt $podcast_line_count_url; do
+    	    indexname="";
+    	    indexurl="";
+    	    if test $i -lt $podcast_line_count_name; then
+    		cur_slug="${podcast_line_arr_name[$i]}";
+                    lookup_poddata "${cur_slug}";
+    		indexname="${poddata["long_name"]}";
     	    fi;
-            echo $'</a>\n        </td>' | tee -a "$shownotes_header_tmp";
-    	    echo $'      </tr>' | tee -a "$shownotes_header_tmp";
+    	    if test $i -lt $podcast_line_count_url; then
+    		cur_slug="${podcast_line_arr_url[$i]}";
+                    lookup_poddata "${cur_slug}";
+    		indexurl="${poddata["url"]}";
+    	    fi;
+    
+    	    if test "" != "$indexname" || test "" != "$indexurl"; then
+    		if test "$is_first_podcast" = "yes"; then
+    		    is_first_podcast="no";
+    		else
+    		    echo ",";
+    		fi;
+    	    fi;
+    
+    	    if test "" != "$indexname" && test "" != "$indexurl"; then
+    		echo -n "          <a href=\"$indexurl\">$indexname</a>";
+    	    elif test "" != "$indexname" && test "" = "$indexurl"; then
+    		echo -n "          $indexname";
+    	    elif test "" = "$indexname" && test "" != "$indexurl"; then
+    		indexname="$(echo "$indexurl" | sed "s/^\\([hH][tT][tT][pP][sS]:\\/\\/\\)\\?\\(www\\.//\\)\\?")";
+    		echo -n "          <a href=\"$indexurl\">$indexname</a>";
+    	    fi;
+    	    let i++;
+    	done;
+    	if test "$is_first_podcast" = "no"; then
+    	    echo "";
+    	fi;
+    	echo "        </td>";
+            lookup_poddata "${orig_pod_name}";
+        else
+    	echo -n $'</td><td><a href="';
+            if test -n "$webseite"; then
+                echo -n "$webseite";
+            else
+                echo -n "${poddata["url"]}";
+            fi;
+    	echo -n $'">';
+    	echo -n "${poddata["long_name"]}";
+    	echo  "</a></td>";
         fi;
-    fi;
-    echo $'    </table>\n  </div>\n</div>' | tee -a "$shownotes_header_tmp";
-
-    if test "yes" = "$is_preview"; then
-#red label
-#        echo -n "<div style=\"clear: both; border-radius: 15px; box-shadow: 2px 2px 3px #303030; text-align: center; text-shadow: 0px 1px 1px #e0a0a0; font-size: 26pt; line-height: 46px; padding: 9px 5px 7px 16px; background: white linear-gradient(to bottom, rgb(255, 208, 208) 0%, rgb(240, 128, 128) 80%, rgb(240, 112, 112) 100%) repeat scroll 0% 0%;\">" | tee -a "$shownotes_header_tmp";
-#yellow label
-        echo -n "<div style=\"clear: both; text-align: center; padding: 40px 0px 0px 0px;\"><div id=\"warning_label\" style=\"margin: 0px auto 0px auto; width: 576pt; padding: 9px 5px 7px 5px; text-align: center; font-family: Sans, Sans-Serif; font-size: 26pt; line-height: 33pt; border-radius: 15px; box-shadow: 2px 2px 3px #303030; text-shadow: 0px 1px 1px #e0e090; background: white linear-gradient(to bottom, rgb(255, 255, 176) 0%, rgb(255, 244, 112) 38%, rgb(255, 248, 96) 83%,  rgb(232, 232, 96) 96%, rgb(208, 208, 112) 100%) repeat scroll 0% 0%;\" title=\"Dies ist kein Button\" onclick=\"if(!confirm('Nein, wirklich kein Button.')) {var text='', label=document.getElementById('warning_label'), cur, parent; parent=label.parentNode; for (var i in label.childNodes) { cur=label.childNodes[i]; if (3 == cur.nodeType) { if (cur.nodeValue) { text += cur.nodeValue; } else if (cur.data) { text += cur.data; } else if (cur.innerText) { text+=cur.innerText; } text+='\n';} } parent.removeChild(label); label=document.createElement('input'); label.type='button'; label=parent.appendChild(label); label.value=text; label.title='Ich hoffe du bist jetzt zufrieden.'; label.onclick=function () { alert('Selber Schuld, jetzt bist du in einer Klickstrecke.'); if(confirm('Magst du weitergeleitet werden?')) { switch (Math.floor(Math.random() * 4)) { case 0: location.href='/podcasts/'; break; case 1: location.href='http://hoersuppe.de/'; break; case 2: location.href='http://podcascription.de/'; break; case 3: location.href='http://podunion.com'; break; } } if(confirm('Stehst du auf Endlosschleifen?')) { var i = 0; while (++i) { if (0 == (i%10)) { if(confirm('War genug, oder?')) { break; } } else { alert('Das geht jetzt so weiter');} } }  }; }\">" | tee -a "$shownotes_header_tmp";
-        echo "Dies ist eine Voransicht,<br/>die Shownotes sind noch in &Uuml;berarbeitung<!--<div style=\"margin: 0pt 0pt 0pt 483pt; height: 0px; overflow: visible; font-size: 9pt; color: #a0a0a0; line-height: 30pt; text-shadow: none;\">Dies ist kein Button</div>--></div></div>" | tee -a "$shownotes_header_tmp";
-    fi;
+    
+    
+        echo  $'      </tr>\n      <tr>';
+        echo -n $'        <td>Episode</td><td';
+        if test -n "$description_titel"; then
+    	echo -n " title=\"$description_titel\"><a href=\"";
+        else
+    	echo -n "><a href=\"";
+        fi;
+        if test "" = "$sendungsseite"; then
+    	echo -n "#";
+        else
+    	echo -n "$sendungsseite";
+        fi;
+        echo -n $'">';
+        echo -n "$sendungstitel";
+        echo $'</a></td>';
+        if test "$has_proper_date" = "yes"; then
+    	echo $'      </tr>';
+    	if test -n "$broadcast_timestamp"; then
+    	    echo "      <tr>";
+                echo "        <td title=\"Beginn der Sendung bzw. des Livestreams\">Sendung vom</td>";
+                echo "        <td title=\"Unix-Timestamp:$broadcast_timestamp\">";
+    	else
+    	    echo "      <tr>";
+                echo "        <td title=\"Beginn der Sendung bzw. des Livestreams\">Sendung vom</td>";
+    	fi;
+    	echo "          $broadcast_day. ${german_months[$broadcast_month]}. $broadcast_year";
+    	echo -n $'        </td>\n';
+    	echo $'      </tr>\n';
+        fi;
+        echo $'      <tr>\n        <td title="In alphabetischer Reihenfolge">Podcaster</td>\n        <td>';
+        bash "${hec_path}/form-userlist.sh" cache="${url_cache_path}" "$podcaster" | sed "s/^\\(.*\\)/          \\1/";
+        echo '        </td>';
+        echo $'      </tr>\n      <tr>\n        <td title="In alphabetischer Reihenfolge">Shownoter</td>\n        <td>';
+        bash "${hec_path}/form-userlist.sh" cache="${url_cache_path}" "$shownoter" | sed "s/^\\(.*\\)/          \\1/";
+        echo $'	</td>\n      </tr>';
+        
+        if test "FALSE" = "${chatlog_deprecated}"; then
+            if test -n "${chatlog_url}"; then
+    	    echo $'      <tr>';
+    	    host_of_chatlog="$(echo "${chatlog_url}" | sed "s/^[a-zA-Z0-9]\\+:\\/\\{0,2\\}//; s/\\(\\.[-_%a-zA-Z0-9]\\+\\)\\(:[0-9]\\+\\)\\?\\(\\/[^/#]*\\)*\\(#.*\\)\\?$/\\1/")";
+    	    if $(echo "$host_of_chatlog" | grep -q "^#"); then
+    		host_of_chatlog="";
+    	    else
+    		host_of_chatlog="$(echo "$host_of_chatlog" | sed "s/\\.\\([Cc][Oo][Mm]\\|[Dd][Ee]\\|[Tt][Kk]\\|[Oo][Rr][Gg]\\)$//")";
+    	    fi;
+    	    echo $'        <td title="Bei Verletzung der eigenen Privatsphäre bitte uns kontaktieren, wir werden uns dann darum bemühen denjenigen rauszufiltern">Chatlog</td>';
+    	    echo -n $'        <td>\n          <a href="';
+    	    echo "${chatlog_url}";
+    	    echo -n '">';
+    	    if test -n "$host_of_chatlog"; then
+        		echo -n "&lt;$host_of_chatlog&gt;";
+        	    elif test -n "${chatlog_url}"; then
+        		echo -n "&lt;${chatlog_url}&gt;";
+        	    else
+        		echo -n "keines";
+        	    fi;
+                echo $'</a>\n        </td>';
+        	    echo $'      </tr>';
+            fi;
+        fi;
+        echo $'    </table>\n  </div>\n</div>';
+    
+        if test "yes" = "$is_preview"; then
+    #red label
+    #        echo -n "<div style=\"clear: both; border-radius: 15px; box-shadow: 2px 2px 3px #303030; text-align: center; text-shadow: 0px 1px 1px #e0a0a0; font-size: 26pt; line-height: 46px; padding: 9px 5px 7px 16px; background: white linear-gradient(to bottom, rgb(255, 208, 208) 0%, rgb(240, 128, 128) 80%, rgb(240, 112, 112) 100%) repeat scroll 0% 0%;\">";
+    #yellow label
+            echo -n "<div style=\"clear: both; text-align: center; padding: 40px 0px 0px 0px;\"><div id=\"warning_label\" style=\"margin: 0px auto 0px auto; width: 576pt; padding: 9px 5px 7px 5px; text-align: center; font-family: Sans, Sans-Serif; font-size: 26pt; line-height: 33pt; border-radius: 15px; box-shadow: 2px 2px 3px #303030; text-shadow: 0px 1px 1px #e0e090; background: white linear-gradient(to bottom, rgb(255, 255, 176) 0%, rgb(255, 244, 112) 38%, rgb(255, 248, 96) 83%,  rgb(232, 232, 96) 96%, rgb(208, 208, 112) 100%) repeat scroll 0% 0%;\" title=\"Dies ist kein Button\" onclick=\"if(!confirm('Nein, wirklich kein Button.')) {var text='', label=document.getElementById('warning_label'), cur, parent; parent=label.parentNode; for (var i in label.childNodes) { cur=label.childNodes[i]; if (3 == cur.nodeType) { if (cur.nodeValue) { text += cur.nodeValue; } else if (cur.data) { text += cur.data; } else if (cur.innerText) { text+=cur.innerText; } text+='\n';} } parent.removeChild(label); label=document.createElement('input'); label.type='button'; label=parent.appendChild(label); label.value=text; label.title='Ich hoffe du bist jetzt zufrieden.'; label.onclick=function () { alert('Selber Schuld, jetzt bist du in einer Klickstrecke.'); if(confirm('Magst du weitergeleitet werden?')) { switch (Math.floor(Math.random() * 4)) { case 0: location.href='/podcasts/'; break; case 1: location.href='http://hoersuppe.de/'; break; case 2: location.href='http://podcascription.de/'; break; case 3: location.href='http://podunion.com'; break; } } if(confirm('Stehst du auf Endlosschleifen?')) { var i = 0; while (++i) { if (0 == (i%10)) { if(confirm('War genug, oder?')) { break; } } else { alert('Das geht jetzt so weiter');} } }  }; }\">";
+            echo "Dies ist eine Voransicht,<br/>die Shownotes sind noch in &Uuml;berarbeitung<!--<div style=\"margin: 0pt 0pt 0pt 483pt; height: 0px; overflow: visible; font-size: 9pt; color: #a0a0a0; line-height: 30pt; text-shadow: none;\">Dies ist kein Button</div>--></div></div>";
+        fi;
+    fi | tee -a "${preview_file}";
 
     #funny how few lines it takes to actually print out the parsed body
     #  kudos (thanks) to Simon Waldherr for writing the OSF parser
