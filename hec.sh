@@ -300,7 +300,40 @@ function lookup_poddata {
     done < "${hec_path}/pod-data.txt";
 }
 
+function actualNamesFromMask {
+    local episode_number="$1";
+    local archive_number="$(printf "%03d" "${episode_number}")";
+    local tmp_alter_value="";
 
+    for i in {1..2}; do
+        case $i in
+            1)
+                tmp_alter_value="${poddata["title_mask"]}";
+                ;;
+            2)
+                tmp_alter_value="${poddata["fname_mask"]}";
+                ;;
+        esac;
+
+        tmp_alter_value="$(sed "s/%archive_number%/${archive_number}/g;" <<< "${tmp_alter_value}")";
+        tmp_alter_value="$(sed "s/%episode_number%/${episode_number}/g;" <<< "${tmp_alter_value}")";
+        tmp_alter_value="$(sed "s/%name%/${poddata["name"]}/g;" <<< "${tmp_alter_value}")";
+        tmp_alter_value="$(sed "s/%slug%/${poddata["slug"]}/g;" <<< "${tmp_alter_value}")";
+        tmp_alter_value="$(sed "s/%slug_uppercase%/$(tr "[:lower:]" "[:upper:]" <<< "${poddata["slug"]}")/g;" <<< "${tmp_alter_value}")";
+        tmp_alter_value="$(sed "s/%long_name%/${poddata["long_name"]}/g;" <<< "${tmp_alter_value}")";
+        tmp_alter_value="$(sed "s/%%/%/g;" <<< "${tmp_alter_value}")";
+
+        case $i in
+            1)
+                poddata["title_proper"]="${tmp_alter_value}";
+                ;;
+            2)
+                poddata["fname_proper"]="${tmp_alter_value}";
+                ;;
+        esac;
+    done;
+
+}
 
 #check if a header exists, if we don't find a properly denoted header
 #  we will do nothing at all
@@ -447,41 +480,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     archive_number=$episode_number;
     archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
 
-    tmp_alter_value="";
-
-    for i in {1..2}; do
-        case $i in
-            1)
-                tmp_alter_value="${poddata["title_mask"]}";
-                ;;
-            2)
-                tmp_alter_value="${poddata["fname_mask"]}";
-                ;;
-        esac;
-
-
-
-
-
-        tmp_alter_value="$(sed "s/%archive_number%/${archive_number}/g;" <<< "${tmp_alter_value}")";
-        tmp_alter_value="$(sed "s/%episode_number%/${episode_number}/g;" <<< "${tmp_alter_value}")";
-        tmp_alter_value="$(sed "s/%name%/${poddata["name"]}/g;" <<< "${tmp_alter_value}")";
-        tmp_alter_value="$(sed "s/%slug%/${poddata["slug"]}/g;" <<< "${tmp_alter_value}")";
-        tmp_alter_value="$(sed "s/%slug_uppercase%/$(tr "[:lower:]" "[:upper:]" <<< "${poddata["slug"]}")/g;" <<< "${tmp_alter_value}")";
-        tmp_alter_value="$(sed "s/%long_name%/${poddata["long_name"]}/g;" <<< "${tmp_alter_value}")";
-        tmp_alter_value="$(sed "s/%%/%/g;" <<< "${tmp_alter_value}")";
-
-        case $i in
-            1)
-                poddata["title_proper"]="${tmp_alter_value}";
-                ;;
-            2)
-                poddata["fname_proper"]="${tmp_alter_value}";
-                ;;
-        esac;
-
-    done;
-
+    actualNamesFromMask "${episode_number}";
     archive_filename="${poddata["fname_proper"]}";
     sendungstitel="${poddata["title_proper"]}";
 
@@ -559,6 +558,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
 	archive_filename="$archive_number.WRINT-$episode_number.html";
 	found_archive_file="no";
+        assigned_new_slug="no";
 	#scan archive for wether we already have archived a file with the given episode_number
 	#  if we find one, we don't have to generate it/guess it
 	for curf in $(ls -1 "$archive_path"); do
@@ -594,11 +594,8 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
                     #  if he isn't mentioned, then it's probably not a
                     #    realitaetsabgleich
                     if ! (grep -q "[^ ]" <<< "$podcaster") || grep -qi "toby" <<< "$podcaster"; then
-                        lookup_poddata "ra";
-			if test "$found_archive_file" = "no"; then
-			    sendungstitel="Realitaetsabgleich";
-			    description_titel="Automatisch generiert";
-			fi;
+                        lookup_poddata "realitaetsabgleich";
+                        assigned_new_slug="yes";
 		    fi;
 		fi;
 	    #if it's sunday, it will probably be a Wrintheit
@@ -611,34 +608,32 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
                 #    wrintheit
                 if ! (grep -q "[^ ]" <<< "$podcaster") || grep -qi "alexandra\\|tobor\\|silenttiffy" <<< "$podcaster"; then
                     lookup_poddata "wrintheit";
-		    if test "$found_archive_file" = "no"; then
-		        sendungstitel="Wrintheit";
-		        description_titel="Automatisch generiert";
-		    fi;
+                    assigned_new_slug="yes";
                 fi;
 	    fi;
             #check again for the name of specific podcasters
 	    if $(echo "$podcaster" | grep -qi "tobor\\|silenttify"); then
 		lookup_poddata ="wrintheit";
-		if test "$found_archive_file" = "no"; then
-		    sendungstitel="Wrintheit $episode_number";
-		    description_titel="Automatisch generiert";
-		fi;
+                assigned_new_slug="yes";
 	    fi;
 	    if $(echo "$podcaster" | grep -qi "christoph\\|raffelt\\|overkorkt"); then
 		lookup_poddata "flaschen";
-		if test "$found_archive_file" = "no"; then
-		    sendungstitel="Wrint Flaschen";
-		    description_titel="Automatisch generiert";
-		fi;
+                assigned_new_slug="yes";
 	    fi;
 	    if $(echo "$podcaster" | grep -qi "toby"); then
-		lookup_poddata "ra";
-		if test "$found_archive_file" = "no"; then
-		    sendungstitel="Realitaetsabgleich";
-		    description_titel="Automatisch generiert";
-		fi;
+		lookup_poddata "realitaetsabgleich";
+                assigned_new_slug="yes";
 	    fi;
+	fi;
+        if test "yes" = "${assigned_new_slug}";
+            then
+            if test "$found_archive_file" = "no";
+                then
+                actualNamesFromMask "${episode_number}";
+                archive_filename="${poddata["fname_proper"]}";
+                sendungstitel="${poddata["title_proper"]}";
+                description_titel="Automatisch generiert";
+            fi;
 	fi;
 	#very specific code to figure out the specific count of a new wrintheit or realitaetsabgleich episode
 	if (test "${poddata["slug"]}" = "ra" || test "${poddata["slug"]}" = "wrintheit") && test "$found_archive_file" = "no"; then
@@ -685,6 +680,9 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	    if test $wrint_number -gt 0; then
 		let wrint_number+=$wrint_add;
 		let wrint_number++;
+#TODO: somehow get this into the configuration file
+# it should then be doable by invoking    actualNamesFromMask "${episode_number}";
+# in here, I guess
 		archive_filename="$archive_number.$wrint_name-$wrint_number.html";
 		sendungstitel="$wrint_name $wrint_number";
 		description_titel="Generiert auf Basis des Archivs";
