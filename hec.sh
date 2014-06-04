@@ -260,26 +260,35 @@ function lookup_poddata {
 
                 i=0;
                 cur_value="";
-                while test 5 -gt $i; do
-                    cur_value="$(sed -r "s/^.{${parsed_char_count}},\"(([^\"\\\\]+|\\\\\"|\\\\\\\\)*)\".*/\\1/;" <<< "${cur_line}")";
-                    parsed_char_count=$((${parsed_char_count} + ${#cur_value} + 3));
+                while test 6 -gt $i; do
+                    cur_value="$(sed -r "s/^.{${parsed_char_count}},(\"(([^\"\\\\]+|\\\\\"|\\\\\\\\)*)\"|([^\",]+)).*/\\1/;" <<< "${cur_line}")";
+                    if grep -q "^\"" <<< "${cur_value}" && \
+                       grep -q "\"$" <<< "${cur_value}"; then
+                        cur_value="$(sed "s/^.//; s/.$//;" <<< "${cur_value}")";
+                        parsed_char_count=$((${parsed_char_count} + ${#cur_value} + 3));
+                    else
+                        parsed_char_count=$((${parsed_char_count} + ${#cur_value} + 1));
+                    fi;
 
                     cur_value="$(poor_unescape "${cur_value}")";
 
                     case $i in
                         0)
-                            poddata["long_name"]="${cur_value}";
+                            poddata["dir_name"]="${cur_value}";
                             ;;
                         1)
-                            poddata["url"]="${cur_value}";
+                            poddata["long_name"]="${cur_value}";
                             ;;
                         2)
-                            poddata["title_mask"]="${cur_value}";
+                            poddata["url"]="${cur_value}";
                             ;;
                         3)
-                            poddata["fname_mask"]="${cur_value}";
+                            poddata["title_mask"]="${cur_value}";
                             ;;
                         4)
+                            poddata["fname_mask"]="${cur_value}";
+                            ;;
+                        5)
                             poddata["logo"]="${cur_value}";
                             ;;
                     esac;
@@ -290,6 +299,7 @@ function lookup_poddata {
         fi;
     done < "${hec_path}/pod-data.txt";
 }
+
 
 
 #check if a header exists, if we don't find a properly denoted header
@@ -419,7 +429,6 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	fi;
     fi;
 
-    archive_path="${out_path}podcasts/";
     archive_number=0;
     archive_filename="";
     archivable="no";
@@ -434,8 +443,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 #        %slug%
 #        %slug_uppercase%
 #        %long_name%
-
-    archive_path+="${poddata["slug"]}";
+    archive_path="${out_path}podcasts/${poddata["dir_name"]}";
     archive_number=$episode_number;
     archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
 
@@ -488,7 +496,6 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     #getting the archive data correct mandates a heavy bunch of code,
     #  it's far from being beautifull
     if test "${poddata["slug"]}" = "bm" || test "${poddata["slug"]}" = "ll" || test "${poddata["slug"]}" = "bmll"; then
-	archive_path+="bm";
 	archive_highest_number=0;
 	built_date="$(echo "$broadcast_day" | sed "s/^\\([0-9]\\)$/0\\1/")";
 	built_date+='_';
@@ -535,7 +542,6 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 
 # Resolve "psyt" in pod-data.txt later on
     elif test "${poddata["slug"]}" = "psyt"; then
-	archive_path+="${poddata["slug"]}";
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
         if test -z "$episodetitle"; then
@@ -549,7 +555,6 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 
 
     elif test "${poddata["slug"]}" = "wrint"; then
-	archive_path+="wrint";
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
 	archive_filename="$archive_number.WRINT-$episode_number.html";
@@ -932,7 +937,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
             echo -n "<div style=\"clear: both; text-align: center; padding: 40px 0px 0px 0px;\"><div id=\"warning_label\" style=\"margin: 0px auto 0px auto; width: 576pt; padding: 9px 5px 7px 5px; text-align: center; font-family: Sans, Sans-Serif; font-size: 26pt; line-height: 33pt; border-radius: 15px; box-shadow: 2px 2px 3px #303030; text-shadow: 0px 1px 1px #e0e090; background: white linear-gradient(to bottom, rgb(255, 255, 176) 0%, rgb(255, 244, 112) 38%, rgb(255, 248, 96) 83%,  rgb(232, 232, 96) 96%, rgb(208, 208, 112) 100%) repeat scroll 0% 0%;\" title=\"Dies ist kein Button\" onclick=\"if(!confirm('Nein, wirklich kein Button.')) {var text='', label=document.getElementById('warning_label'), cur, parent; parent=label.parentNode; for (var i in label.childNodes) { cur=label.childNodes[i]; if (3 == cur.nodeType) { if (cur.nodeValue) { text += cur.nodeValue; } else if (cur.data) { text += cur.data; } else if (cur.innerText) { text+=cur.innerText; } text+='\n';} } parent.removeChild(label); label=document.createElement('input'); label.type='button'; label=parent.appendChild(label); label.value=text; label.title='Ich hoffe du bist jetzt zufrieden.'; label.onclick=function () { alert('Selber Schuld, jetzt bist du in einer Klickstrecke.'); if(confirm('Magst du weitergeleitet werden?')) { switch (Math.floor(Math.random() * 4)) { case 0: location.href='/podcasts/'; break; case 1: location.href='http://hoersuppe.de/'; break; case 2: location.href='http://podcascription.de/'; break; case 3: location.href='http://podunion.com'; break; } } if(confirm('Stehst du auf Endlosschleifen?')) { var i = 0; while (++i) { if (0 == (i%10)) { if(confirm('War genug, oder?')) { break; } } else { alert('Das geht jetzt so weiter');} } }  }; }\">";
             echo "Dies ist eine Voransicht,<br/>die Shownotes sind noch in &Uuml;berarbeitung<!--<div style=\"margin: 0pt 0pt 0pt 483pt; height: 0px; overflow: visible; font-size: 9pt; color: #a0a0a0; line-height: 30pt; text-shadow: none;\">Dies ist kein Button</div>--></div></div>";
         fi;
-    fi | tee -a "${preview_file}";
+    fi | tee -a "${shownotes_header_tmp}";
 
     #funny how few lines it takes to actually print out the parsed body
     #  kudos (thanks) to Simon Waldherr for writing the OSF parser
