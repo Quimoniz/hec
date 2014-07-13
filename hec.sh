@@ -304,6 +304,8 @@ function actualNamesFromMask {
     local episode_number="$1";
     local archive_number="$(printf "%03d" "${episode_number}")";
     local tmp_alter_value="";
+    local broadcast_timestamp="$2";
+
 
     for i in {1..2}; do
         case $i in
@@ -321,6 +323,7 @@ function actualNamesFromMask {
         tmp_alter_value="$(sed "s/%slug%/${poddata["slug"]}/g;" <<< "${tmp_alter_value}")";
         tmp_alter_value="$(sed "s/%slug_uppercase%/$(tr "[:lower:]" "[:upper:]" <<< "${poddata["slug"]}")/g;" <<< "${tmp_alter_value}")";
         tmp_alter_value="$(sed "s/%long_name%/${poddata["long_name"]}/g;" <<< "${tmp_alter_value}")";
+        tmp_alter_value="$(sed "s/%date_iso-8601%/$(date --date="@${broadcast_timestamp}" --iso-8601)/g;" <<< "${tmp_alter_value}")";
         tmp_alter_value="$(sed "s/%%/%/g;" <<< "${tmp_alter_value}")";
 
         case $i in
@@ -480,10 +483,11 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     archive_number=$episode_number;
     archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
 
-    actualNamesFromMask "${episode_number}";
-    archive_filename="${poddata["fname_proper"]}";
-    sendungstitel="${poddata["title_proper"]}";
-
+#will be done later anyway
+    #actualNamesFromMask "${episode_number}" "${broadcast_timestamp}";
+    #archive_filename="${poddata["fname_proper"]}";
+    #sendungstitel="${poddata["title_proper"]}";
+    reparse_of_stored="";
 
     if test "undeclared" != "${poddata["slug"]}"; then
         description_titel="Automatisch generiert";
@@ -496,31 +500,21 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     #  it's far from being beautifull
     if test "${poddata["slug"]}" = "bm" || test "${poddata["slug"]}" = "ll" || test "${poddata["slug"]}" = "bmll"; then
 	archive_highest_number=0;
-	built_date="$(echo "$broadcast_day" | sed "s/^\\([0-9]\\)$/0\\1/")";
-	built_date+='_';
-	built_date+="$(echo "$broadcast_month" | sed "s/^\\([0-9]\\)$/0\\1/")";
-	built_date+='_';
-	built_date+="$(echo "$broadcast_year" | sed "s/^[0-9]\\{2\\}\\([0-9]\\{2\\}\\)$/\\1/")";
-	for curf in $(ls -1 "$archive_path"); do
-	    if test -f "$archive_path/$curf"; then
-		if $(echo "$curf" | grep -q "^[0-9]\\{1,5\\}\\.[0-9]\\{2\\}_[0-9]\\{2\\}_[0-9]\\{2\\}\\.html$"); then
-		    cur_number=$(echo "$curf" | sed "s/^\\([0-9]\\{1,5\\}\\)\\.[0-9]\\{2\\}_[0-9]\\{2\\}_[0-9]\\{2\\}\\.html$/\\1/");
-		    if test $cur_number -gt $archive_highest_number; then
-			archive_highest_number=$cur_number;
-		    fi;
 
-		    file_date="$(echo "$curf" | sed "s/^[0-9]\\{1,5\\}\\.\\([0-9]\\{2\\}_[0-9]\\{2\\}_[0-9]\\{2\\}\\)\\.html$/\\1/")";
+        while read $curfile; do
+            if test -f "${archive_path}/${curfile}"; then
+               cur_number="$(grep -o -m 1 "^[0-9]\\+" <<< "${curfile}")";
+               if test ${archive_highest_number} -lt ${cur_number}; then
+                  archive_highest_number=${cur_number};
+               fi;
+               if test ${episode_number} -eq ${cur_number}; then
+               	   reparsed_of_stored="${curfile}";
+               fi;
+            fi;
+        done <<< "$(ls -1 "${archive_path}")";
 
-		    if test "$file_date" = "$built_date"; then
-			archive_number=$(echo "$curf" | sed "s/^\\([0-9]\\{1,5\\}\\)\\.[0-9]\\{2\\}_[0-9]\\{2\\}_[0-9]\\{2\\}\\.html$/\\1/");
-			archive_filename="$curf";
-		    fi;
-		fi;
-	    fi;
-	done;
 	if test 0 -eq $archive_number && test "" = "$archive_filename"; then
 	    archive_number=$(($archive_highest_number + 1));
-	    archive_filename="$archive_number.$built_date.html";
 	fi;
 
 	if test "${poddata["slug"]}" = "bm"; then
@@ -585,7 +579,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	    day_of_week=$(date --date="@$broadcast_timestamp" +%w);
 	    # if it's wednesday or friday odds are very likely it's a Realitaetsabgleich
 	    if test $day_of_week -eq 3 || test $day_of_week -eq 5; then
-		if $(echo "$sendungsseite" | grep -qi "flaschen\\|wein\\|whisk\\|gespr"); then
+		if $(echo "$sendungsseite" | grep -qi "flaschen\\|wein\\|whisk\\|gespr\\|person\\|lauer"); then
 		    false;
 		else
                     #if field podcaster isn't empty, we will assume
@@ -616,8 +610,12 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 		lookup_poddata ="wrintheit";
                 assigned_new_slug="yes";
 	    fi;
-	    if $(echo "$podcaster" | grep -qi "christoph\\|raffelt\\|overkorkt"); then
+	    if $(echo "$podcaster" | grep -qi "christoph[^e]\\|raffelt\\|overkorkt"); then
 		lookup_poddata "flaschen";
+                assigned_new_slug="yes";
+	    fi;
+	    if $(echo "$podcaster" | grep -qi "lauer\\|christopher\\|schmidtlepp"); then
+		lookup_poddata "wrintperson";
                 assigned_new_slug="yes";
 	    fi;
 	    if $(echo "$podcaster" | grep -qi "toby"); then
@@ -629,7 +627,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
             then
             if test "$found_archive_file" = "no";
                 then
-                actualNamesFromMask "${episode_number}";
+                actualNamesFromMask "${episode_number}" "${broadcast_timestamp}";
                 archive_filename="${poddata["fname_proper"]}";
                 sendungstitel="${poddata["title_proper"]}";
                 description_titel="Automatisch generiert";
@@ -725,6 +723,8 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
         fi;
     fi;
 
+    actualNamesFromMask "${episode_number}" "${broadcast_timestamp}";
+    archive_filename="${poddata["fname_proper"]}";
     #set $episodetitle
     if test -n "$episodetitle" && $(echo -n "$episodetitle" | grep -q $'.\\+'); then
 	sendungstitel="$episodetitle";
@@ -764,9 +764,11 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 		fi;
 
 	    fi;
+        else
+            sendungstitel="${poddata["title_proper"]}";
 	fi;
     fi;
-
+    
 
     #we dump to stdout and to a temporary file
     #  so that we can save it as preview and possibly also into archive
@@ -775,7 +777,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     shownotes_header_tmp="$(mktemp)";
 
     #now we are generating the header's HTML
-    #  this "if true" just for having a block of code which can be piped as a whole
+    #  this "if true" is just for having a block of code which can be piped as a whole
     if true; then
         echo $'<div class="info">\n  <div class="thispodcast">\n    <div class="podcastimg">';
         echo -n $'      ';
