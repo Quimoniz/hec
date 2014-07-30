@@ -324,6 +324,13 @@ function actualNamesFromMask {
         tmp_alter_value="$(sed "s/%slug_uppercase%/$(tr "[:lower:]" "[:upper:]" <<< "${poddata["slug"]}")/g;" <<< "${tmp_alter_value}")";
         tmp_alter_value="$(sed "s/%long_name%/${poddata["long_name"]}/g;" <<< "${tmp_alter_value}")";
         tmp_alter_value="$(sed "s/%date_iso-8601%/$(date --date="@${broadcast_timestamp}" --iso-8601)/g;" <<< "${tmp_alter_value}")";
+        while grep -q "%date_[^%]*%" <<< "${tmp_alter_value}";
+           do
+            date_find_string="$(grep -m 1 -o "%date_[^%]*%" <<< "${tmp_alter_value}")";
+            date_field="$(sed "s/^%date_//; s/%$//;" <<< "${date_find_string}")";
+            date_value="$(date --date="@${broadcast_timestamp}" +"${date_field}")";
+            tmp_alter_value="$(sed "s/${date_find_string}/${date_value}/g;" <<< "${tmp_alter_value}")";
+        done;
         tmp_alter_value="$(sed "s/%%/%/g;" <<< "${tmp_alter_value}")";
 
         case $i in
@@ -500,18 +507,24 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
     #  it's far from being beautifull
     if test "${poddata["slug"]}" = "bm" || test "${poddata["slug"]}" = "ll" || test "${poddata["slug"]}" = "bmll"; then
 	archive_highest_number=0;
+        archive_filename="";
+        archive_number=0;
+        partial_name="\\.BM-$(date --date="@${broadcast_timestamp}" --iso-8601)\\.html$";
 
-        while read $curfile; do
+
+        for curfile in $(ls -1 "${archive_path}"); do
             if test -f "${archive_path}/${curfile}"; then
                cur_number="$(grep -o -m 1 "^[0-9]\\+" <<< "${curfile}")";
                if test ${archive_highest_number} -lt ${cur_number}; then
-                  archive_highest_number=${cur_number};
+                   archive_highest_number=${cur_number};
                fi;
-               if test ${episode_number} -eq ${cur_number}; then
-               	   reparsed_of_stored="${curfile}";
+               if grep -q "${partial_name}" <<< "${curfile}"; then
+               	   archive_filename="${curfile}";
+                   archive_number="${cur_number}";
                fi;
             fi;
-        done <<< "$(ls -1 "${archive_path}")";
+        done;
+
 
 	if test 0 -eq $archive_number && test "" = "$archive_filename"; then
 	    archive_number=$(($archive_highest_number + 1));
@@ -524,11 +537,15 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	elif test "${poddata["slug"]}" = "bmll"; then
 	    sendungstitel="Blue Moon/LateLine ";
 	fi;
+        episode_number="$(sed "s/^0\\+//;" <<< "${archive_number}")";
 	sendungstitel+="$(echo "$built_date" | sed "s/_/./g")";
 	description_titel="Automatisch generiert";
 
 
 	archivable="yes";
+
+
+
 
 
 
@@ -725,6 +742,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 
     actualNamesFromMask "${episode_number}" "${broadcast_timestamp}";
     archive_filename="${poddata["fname_proper"]}";
+
     #set $episodetitle
     if test -n "$episodetitle" && $(echo -n "$episodetitle" | grep -q $'.\\+'); then
 	sendungstitel="$episodetitle";
