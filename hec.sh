@@ -575,7 +575,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	for curf in $(ls -1 "$archive_path"); do
 	    if test -f "$archive_path/$curf"; then
 		if $(echo "$curf" | grep -q "^[0-9]\\{1,5\\}\\.[^.]\\+\\.html$"); then
-		    if test $(echo "$curf" | grep -o "^[0-9]\\{1,5\\}") -eq $episode_number; then
+		    if test $(echo "$curf" | grep -o "^[0-9]\\{1,5\\}") -eq ${episode_number:-0}; then
 			archive_filename="$curf";
 			wrint_name="$(echo "$curf" | sed "s/^[0-9]\\+\\.//; s/\\.[Hh][Tt][Mm][Ll]$//;")";
 			wrint_number="$(echo "$wrint_name" | sed "s/.*-\\([0-9]\\+\\)$/\\1/")";
@@ -758,6 +758,9 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 	    #check if the double-<-character (&laquo;) was used to separate episode title from content-management-system title
 	    elif echo "$sendungstitel" | grep -q "&laquo;"; then
 		sendungstitel="$(echo "$sendungstitel" | sed "s/ \\?&laquo;.*//")";
+	    #check if "&#8211;" was used for separating
+            elif echo "$sendungstitel" | grep -q "&#8211;"; then
+                sendungstitel="$(echo "$sendungstitel" | sed "s/ \\?&#8211;.*//")";
 	    #check if "&mdash;" was used for separating
 	    elif echo "$sendungstitel" | grep -q "&mdash;"; then
 		sendungstitel="$(echo "$sendungstitel" | sed "s/ \\?&mdash;.*//")";
