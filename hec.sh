@@ -504,7 +504,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 
 
     #getting the archive data correct mandates a heavy bunch of code,
-    #  it's far from being beautifull
+    #  it's far from being beautifull, actually it's ugly
     if test "${poddata["slug"]}" = "bm" || test "${poddata["slug"]}" = "ll" || test "${poddata["slug"]}" = "bmll"; then
 	archive_highest_number=0;
         archive_filename="";
@@ -550,7 +550,7 @@ if $(echo "$padheader" | grep "." | head -n 1 | grep -qi "head\\(er\\)\\?") &&  
 
 
 
-# Resolve "psyt" in pod-data.txt later on
+# ToDo: Resolve "psyt" in pod-data.txt later on
     elif test "${poddata["slug"]}" = "psyt"; then
 	archive_number=$episode_number;
 	archive_number="$(echo "$archive_number" | sed "s/^\\([0-9]\\)$/00\\1/; s/^\\([0-9]\\{2\\}\\)$/0\\1/;")";
